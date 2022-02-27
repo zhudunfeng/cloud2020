@@ -18,4 +18,6 @@ SpringCloud2020年的技术变更
 
 eureka server集群
 
+<img src="https://gitee.com/zhudunfeng/cloudimage/raw/master/image/202202271725855.png" alt="image-20220227172534797" style="zoom:67%;" />
+
 ![image-20220227141957114](https://gitee.com/zhudunfeng/cloudimage/raw/master/image/202202271419150.png)
