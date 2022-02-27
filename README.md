@@ -15,3 +15,7 @@ SpringCloud2020年的技术变更
 ## 引入Eureka服务发现与注册
 
 <img src="https://gitee.com/zhudunfeng/cloudimage/raw/master/image/202202271342914.png" alt="image-20220227134225873" style="zoom:80%;" />
+
+eureka server集群
+
+![image-20220227141957114](https://gitee.com/zhudunfeng/cloudimage/raw/master/image/202202271419150.png)
