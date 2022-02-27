@@ -11,16 +11,16 @@ import javax.annotation.Resource;
  * @date 2022/2/27 18:36
  */
 @RestController
-public class OrderZKController {
+public class OrderConsulController {
 
-    public static final String INVOKE_URL="http://cloud-provider-paymentspringcloud";
+    public static final String INVOKE_URL="http://consul-provider-payment";
 
     @Resource
     private RestTemplate restTemplate;
 
-    @GetMapping(value = "/consumer/payment/zk")
+    @GetMapping(value = "/consumer/payment/consul")
     public String getPayment(){
-        return restTemplate.getForObject(INVOKE_URL+"/payment/zk", String.class );
+        return restTemplate.getForObject(INVOKE_URL+"/payment/consul", String.class );
     }
 
 
