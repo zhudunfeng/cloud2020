@@ -13,7 +13,7 @@ import javax.annotation.Resource;
 @RestController
 public class OrderZKController {
 
-    public static final String INVOKE_URL="http://cloud-provider-paymentspringcloud";
+    public static final String INVOKE_URL="http://cloud-provider-payment";
 
     @Resource
     private RestTemplate restTemplate;
