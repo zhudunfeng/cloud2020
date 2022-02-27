@@ -11,3 +11,7 @@ SpringCloud2020年的技术变更
 
 
 ![image-20220227111214723](https://gitee.com/zhudunfeng/cloudimage/raw/master/image/202202271112780.png)
+
+## 引入Eureka服务发现与注册
+
+<img src="https://gitee.com/zhudunfeng/cloudimage/raw/master/image/202202271342914.png" alt="image-20220227134225873" style="zoom:80%;" />
