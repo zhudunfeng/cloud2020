@@ -12,7 +12,9 @@ SpringCloud2020年的技术变更
 
 ![image-20220227111214723](https://gitee.com/zhudunfeng/cloudimage/raw/master/image/202202271112780.png)
 
-## 引入Eureka服务发现与注册
+## 微服务注册中心
+
+### 引入Eureka服务发现与注册
 
 <img src="https://gitee.com/zhudunfeng/cloudimage/raw/master/image/202202271342914.png" alt="image-20220227134225873" style="zoom:80%;" />
 
@@ -21,3 +23,18 @@ eureka server集群
 <img src="https://gitee.com/zhudunfeng/cloudimage/raw/master/image/202202271725855.png" alt="image-20220227172534797" style="zoom:67%;" />
 
 ![image-20220227141957114](https://gitee.com/zhudunfeng/cloudimage/raw/master/image/202202271419150.png)
+
+### zookeeper相关项目
+
+<img src="https://gitee.com/zhudunfeng/cloudimage/raw/master/image/202202272257070.png" alt="image-20220227225729931" style="zoom:80%;" />
+
+### consul相关项目
+
+<img src="https://gitee.com/zhudunfeng/cloudimage/raw/master/image/202202272259322.png" alt="image-20220227225915255" style="zoom:80%;" />
+
+### 三个注册中心的对比
+
+<img src="https://gitee.com/zhudunfeng/cloudimage/raw/master/image/202202272308504.png" alt="image-20220227230802462" style="zoom:67%;" />
+
+<img src="https://gitee.com/zhudunfeng/cloudimage/raw/master/image/202202272309193.png" alt="image-20220227230944151" style="zoom:67%;" />
+ 
