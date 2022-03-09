@@ -21,6 +21,14 @@ spring:
           uri: lb://cloud-payment-service #匹配后提供服务的路由地址
           predicates:
             - Path=/payment/lb/**         # 断言，路径相匹配的进行路由
+            - After=2022-03-09T10:19:48.741+08:00[Asia/Shanghai] #断言，进行路径匹配，什么时间之后可访问
+            #- Before=2020-02-05T15:10:03.685+08:00[Asia/Shanghai]         # 断言，路径相匹配的进行路由
+            #- Between=2020-02-02T17:45:06.206+08:00[Asia/Shanghai],2020-03-25T18:59:06.206+08:00[Asia/Shanghai]
+            #- Cookie=username,adun
+            #- Header=X-Request-Id, \d+  # 请求头要有X-Request-Id属性并且值为整数的正则表达式
+            #- Host=**.adun.com
+            #- Method=GET
+            #- Query=username, \d+  # 要有参数名username并且值还要是整数才能路由
 
 
 eureka:
