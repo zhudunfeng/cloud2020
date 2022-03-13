@@ -169,9 +169,6 @@ public interface PaymentFeignService {
 <img src="https://gitee.com/zhudunfeng/cloudimage/raw/master/image/202203081641968.png" alt="image-20220308164134879" style="zoom:67%;" />
 
 
-
-
-
 ## 服务配置中心
 
 
