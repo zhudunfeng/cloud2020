@@ -168,3 +168,229 @@ public interface PaymentFeignService {
 
 <img src="https://gitee.com/zhudunfeng/cloudimage/raw/master/image/202203081641968.png" alt="image-20220308164134879" style="zoom:67%;" />
 
+
+## 服务配置中心
+
+
+
+<img src="https://gitee.com/zhudunfeng/cloudimage/raw/master/image/202203131700645.png" alt="image-20220313170052544" style="zoom:67%;" />
+
+### Spring Cloud Config
+
+#### configServer
+
+##### pom.xml
+
+```xml
+ <dependency>
+     <groupId>org.springframework.cloud</groupId>
+     <artifactId>spring-cloud-config-server</artifactId>
+</dependency>
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-actuator</artifactId>
+</dependency>
+```
+
+##### application.yml
+
+```yaml
+spring:
+  application:
+    name:  cloud-config-center #注册进Eureka服务器的微服务名
+  cloud:
+    config:
+      server:
+        git:
+          uri: git@github.com:adun/springcloud-config.git #GitHub上面的git仓库名字
+        ####搜索目录
+          search-paths:
+            - springcloud-config
+      ####读取分支
+      label: master
+
+```
+
+##### 主启动类
+
+```java
+@EnableConfigServer
+```
+
+
+
+#### 微服务客户实例
+
+##### pom.xml
+
+```xml
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-config</artifactId>
+</dependency>
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-actuator</artifactId>
+</dependency>
+```
+
+##### bootstrap.yml
+
+```yaml
+server:
+  port: 3355
+
+spring:
+  application:
+    name: config-client
+  cloud:
+    #Config客户端配置
+    config:
+      label: master #分支名称
+      name: config #配置文件名称
+      profile: dev #读取后缀名称   上述3个综合：master分支上config-dev.yml的配置文件被读取http://config-3344.com:3344/master/config-dev.yml
+      uri: http://localhost:3344 #配置中心地址k
+
+#服务注册到eureka地址
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:7001/eureka
+# 暴露监控端点
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+```
+
+##### 需要刷新的类，添加注解
+
+```java
+//可动态刷新配置
+@RefreshScope
+```
+
+
+
+### Spring Cloud Bus【底层使用消息中间件进行通知】
+
+> Spring Cloud Bus能管理和传播分布式系统间的消息，就像一个分布式执行器，可用于广播状态更改、事件推送等，也可以当作微服务间的通信通道。
+
+Spring Cloud Bus 配合 Spring Cloud Config 使用可以实现配置的动态刷新。
+
+==Bus支持两种消息代理：RabbitMQ 和 Kafka==
+
+可以通过引入不同的坐标进行选择
+
+> `spring-cloud-starter-bus-amqp` or `spring-cloud-starter-bus-kafka`
+
+
+
+#### 什么是总线
+
+在微服务架构的系统中，==通常会使用轻量级的消息代理来构建一个共用的消息主题==，并让系统中所有微服务实例都连接上来。==由于该主题中产生的消息会被所有实例监听和消费，所以称它为消息总线。==在总线上的各个实例，都可以方便地广播一些需要让其他连接在该主题上的实例都知道的消息。
+
+#### 基本原理
+
+ConfigClient实例都监听MQ中同一个topic(默认是springCloudBus)。当一个服务刷新数据的时候，它会把这个信息放入到Topic中，这样其它监听同一Topic的服务就能得到通知，然后去更新自身的配置。
+
+
+
+#### 基本架构
+
+![image-20220313164848797](https://gitee.com/zhudunfeng/cloudimage/raw/master/image/202203131648869.png)
+
+
+
+#### 配置中心服务端
+
+##### pom.xml
+
+```xml
+<!--添加消息总线RabbitMQ支持-->
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-bus-amqp</artifactId>
+</dependency>
+<!--添加服务监控，用于服务刷新数据-->
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-actuator</artifactId>
+</dependency>
+```
+
+##### yml
+
+```yaml
+#rabbitmq相关配置
+rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    
+##rabbitmq相关配置,暴露bus刷新配置的端点
+management:
+  endpoints: #暴露bus刷新配置的端点
+    web:
+      exposure:
+        include: 'bus-refresh'
+```
+
+##### 主启动类
+
+```java
+//激活分布式配置服务中心
+@EnableConfigServer
+```
+
+
+
+#### 配置中心客户端
+
+##### pom.xml
+
+```xml
+<!--添加消息总线RabbitMQ支持-->
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-bus-amqp</artifactId>
+</dependency>
+<!--添加服务监控，用于服务刷新数据-->
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-actuator</artifactId>
+</dependency>
+```
+
+##### bootstrap.yml
+
+```yaml
+#rabbitmq相关配置 15672是Web管理界面的端口；5672是MQ访问的端口
+rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+# 暴露监控端点
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"   # 'refresh'
+
+```
+
+##### 需要动态刷新的类，添加注解
+
+```java
+//可动态刷新配置
+@RefreshScope
+```
+
+
+
+## Spring Cloud Stream
+
+> 引入目的：屏蔽底层消息中间件的差异,降低切换成本，统一消息的编程模型

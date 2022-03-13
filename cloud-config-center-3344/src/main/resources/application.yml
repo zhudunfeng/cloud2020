@@ -1,0 +1,43 @@
+server:
+  port: 3344
+
+spring:
+  application:
+    name:  cloud-config-center #注册进Eureka服务器的微服务名
+  cloud:
+    config:
+      server:
+        git:
+#          uri: git@github.com:zhudunfeng/springcloud-dpa-config.git #GitHub上面的git仓库名字
+#          uri: https://github.com/zhudunfeng/springcloud-dpa-config.git
+          uri: https://gitee.com/zhudunfeng/springcloud-dpa-config.git
+          ####搜索目录
+          search-paths:
+            - springcloud-dpa-config
+          force-pull: true
+          username: 2101580047@qq.com
+          password: A123wes123?
+      ####读取分支
+      label: master
+  #rabbitmq相关配置
+  rabbitmq:
+    host: 192.168.57.129
+    port: 5672
+    username: adun
+    password: adun
+
+
+
+#服务注册到eureka地址
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:7001/eureka
+
+
+##rabbitmq相关配置,暴露bus刷新配置的端点
+management:
+  endpoints: #暴露bus刷新配置的端点
+    web:
+      exposure:
+        include: 'bus-refresh'
