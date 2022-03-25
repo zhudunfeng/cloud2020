@@ -15,8 +15,8 @@ spring:
           search-paths:
             - springcloud-dpa-config
           force-pull: true
-          username: 2101580047@qq.com
-          password: A123wes123?
+          username: 
+          password:
       ####读取分支
       label: master
   #rabbitmq相关配置
