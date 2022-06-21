@@ -10,7 +10,7 @@ SpringCloud2020年的技术变更
 
 
 
-![image-20220227111214723](https://gitee.com/zhudunfeng/cloudimage/raw/master/image/202202271112780.png)
+![image-20220227111214723](https://cloudimgs-1301504220.cos.ap-nanjing.myqcloud.com/image/202202271112780.png)
 
 
 
@@ -20,27 +20,27 @@ SpringCloudNetflix组件大部分进入维护状态，从而Spring官方推荐�
 
 维护前的主要cloud组件
 
-<img src="https://gitee.com/zhudunfeng/cloudimage/raw/master/image/202203081638521.png" alt="image-20220308163814442" style="zoom: 67%;" />
+<img src="https://cloudimgs-1301504220.cos.ap-nanjing.myqcloud.com/image/202203081638521.png" alt="image-20220308163814442" style="zoom: 67%;" />
 
 推荐替换的相应组件
 
-![image-20220308163942294](https://gitee.com/zhudunfeng/cloudimage/raw/master/image/202203081639345.png)
+![image-20220308163942294](https://cloudimgs-1301504220.cos.ap-nanjing.myqcloud.com/image/202203081639345.png)
 
 ## 微服务注册中心
 
 ### 引入Eureka服务发现与注册
 
-<img src="https://gitee.com/zhudunfeng/cloudimage/raw/master/image/202202271342914.png" alt="image-20220227134225873" style="zoom:80%;" />
+<img src="https://cloudimgs-1301504220.cos.ap-nanjing.myqcloud.com/image/202202271342914.png" alt="image-20220227134225873" style="zoom:80%;" />
 
 eureka server集群
 
-<img src="https://gitee.com/zhudunfeng/cloudimage/raw/master/image/202202271725855.png" alt="image-20220227172534797" style="zoom:67%;" />
+<img src="https://cloudimgs-1301504220.cos.ap-nanjing.myqcloud.com/image/202202271725855.png" alt="image-20220227172534797" style="zoom:67%;" />
 
-![image-20220227141957114](https://gitee.com/zhudunfeng/cloudimage/raw/master/image/202202271419150.png)
+![image-20220227141957114](https://cloudimgs-1301504220.cos.ap-nanjing.myqcloud.com/image/202202271419150.png)
 
 ### zookeeper相关项目
 
-<img src="https://gitee.com/zhudunfeng/cloudimage/raw/master/image/202202272257070.png" alt="image-20220227225729931" style="zoom:80%;" />
+<img src="https://cloudimgs-1301504220.cos.ap-nanjing.myqcloud.com/image/202202272257070.png" alt="image-20220227225729931" style="zoom:80%;" />
 
 ### consul相关项目
 
@@ -299,7 +299,7 @@ ConfigClient实例都监听MQ中同一个topic(默认是springCloudBus)。当一
 
 #### 基本架构
 
-![image-20220313164848797](https://gitee.com/zhudunfeng/cloudimage/raw/master/image/202203131648869.png)
+![image-20220313164848797](https://cloudimgs-1301504220.cos.ap-nanjing.myqcloud.com/image/202203131648869.png)
 
 
 
