@@ -1,5 +1,3 @@
-
-
 # SpringCloud
 
 SpringCloud2020年的技术变更
@@ -125,6 +123,10 @@ public class OrderController {
    ![1660210993916](README.assets/1660210993916.png)
 
 ### Eureka项目相关
+
+![1660215822047](README.assets/1660215822047.png)
+
+
 
 Eureka包含两个组件：==Eureka Server==和==Eureka Client==
 
@@ -869,21 +871,309 @@ eureka:
 
  
 
- 
-
- 
-
- 
-
- 
-
- 
-
-
-
 ### zookeeper相关项目
 
+![1660215864730](README.assets/1660215864730.png)
+
+
+
+#### 1、基本项目架构
+
+注册中心zookeeper需要安装到linux
+
+![1660215992738](README.assets/1660215992738.png)
+
+```txt
+cloud2020
+	cloud-provider-payment8004		服务提供者8004
+	cloud-consumerzk-order80		服务消费者80
+```
+
 <img src="https://cloudimgs-1301504220.cos.ap-nanjing.myqcloud.com/image/202202272257070.png" alt="image-20220227225729931" style="zoom:80%;" />
+
+#### 2、项目搭建
+
+##### （1）新建cloud-provider-payment8004
+
+改pom【zookeeper版本必须与自己安装的一致】
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>cloud2020</artifactId>
+        <groupId>com.adun.springcloud</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>cloud-provider-payment8004</artifactId>
+
+
+    <dependencies>
+        <!-- SpringBoot整合Web组件 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency><!-- 引入自己定义的api通用包，可以使用Payment支付Entity -->
+            <groupId>com.adun.springcloud</groupId>
+            <artifactId>cloud-api-commons</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- SpringBoot整合zookeeper客户端 -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-zookeeper-discovery</artifactId>
+            <!--先排除自带的zookeeper3.5.3-->
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.zookeeper</groupId>
+                    <artifactId>zookeeper</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <!--添加zookeeper3.4.9版本-->
+        <dependency>
+            <groupId>org.apache.zookeeper</groupId>
+            <artifactId>zookeeper</artifactId>
+            <version>3.4.9</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <scope>runtime</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
+
+```
+
+写yml
+
+```yaml
+#8004表示注册到zookeeper服务器的支付服务提供者端口号
+server:
+  port: 8004
+#服务别名----注册zookeeper到注册中心名称
+spring:
+  application:
+    name: cloud-provider-payment
+  cloud:
+    zookeeper:
+      connect-string: 192.168.111.144:2181
+```
+
+主启动
+
+```java
+@SpringBootApplication
+@EnableDiscoveryClient //该注解用于向使用consul或者zookeeper作为注册中心时注册服务
+public class PaymentMain8004
+{
+    public static void main(String[] args)
+    {
+        SpringApplication.run(PaymentMain8004.class,args);
+    }
+
+}
+```
+
+业务类
+
+```java
+@RestController
+public class PaymentController
+{
+    @Value("${server.port}")
+    private String serverPort;
+
+    @RequestMapping(value = "/payment/zk")
+    public String paymentzk()
+    {
+        return "springcloud with zookeeper: "+serverPort+"\t"+ UUID.randomUUID().toString();
+    }
+}
+```
+
+验证测试
+
+http://localhost:8004/payment/zk
+
+![1660216388381](README.assets/1660216388381.png)
+
+
+
+验证测试2
+
+![1660216470623](README.assets/1660216470623.png)
+
+
+
+思考：服务节点是临时节点还是持久节点
+
+临时节点
+
+
+
+##### （2）新建cloud-consumerzk-order80
+
+改pom
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>cloud2020</artifactId>
+        <groupId>com.adun.springcloud</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>cloud-consumerzk-order81</artifactId>
+
+
+    <dependencies>
+        <!-- SpringBoot整合Web组件 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <!-- SpringBoot整合zookeeper客户端 -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-zookeeper-discovery</artifactId>
+            <!--先排除自带的zookeeper-->
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.zookeeper</groupId>
+                    <artifactId>zookeeper</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <!--添加zookeeper3.4.9版本-->
+        <dependency>
+            <groupId>org.apache.zookeeper</groupId>
+            <artifactId>zookeeper</artifactId>
+            <version>3.4.9</version>
+        </dependency>
+
+        <!--热部署-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <scope>runtime</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
+```
+
+写yml
+
+```yaml
+server:
+  port: 80
+
+spring:
+  application:
+    name: cloud-consumer-order
+  cloud:
+  #注册到zookeeper地址
+    zookeeper:
+      connect-string: 192.168.111.144:2181
+```
+
+主启动
+
+```java
+@SpringBootApplication
+@EnableDiscoveryClient
+public class OrderZK80 {
+    public static void main(String[] args) {
+        SpringApplication.run(OrderZK80.class, args);
+    }
+}
+```
+
+业务类
+
+配置bean
+
+```java
+@Configuration
+public class ApplicationContextBean
+{
+    @Bean
+    @LoadBalanced
+    public RestTemplate getRestTemplate()
+    {
+        return new RestTemplate();
+    }
+}
+```
+
+controller
+
+```java
+@RestController
+public class OrderZKController
+{
+    public static final String INVOKE_URL = "http://cloud-provider-payment";
+
+    @Autowired
+    private RestTemplate restTemplate;
+
+    @RequestMapping(value = "/consumer/payment/zk")
+    public String paymentInfo()
+    {
+        String result = restTemplate.getForObject(INVOKE_URL+"/payment/zk", String.class);
+        System.out.println("消费者调用支付服务(zookeeper)--->result:" + result);
+        return result;
+    }
+
+}
+
+```
+
+验证测试
+
+![1660216702504](README.assets/1660216702504.png)
+
+
+
+访问测试地址
+
+http://localhost/consumer/payment/zk
+
+
 
 ### consul相关项目
 
