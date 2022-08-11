@@ -1,3 +1,5 @@
+
+
 # SpringCloud
 
 SpringCloud2020年的技术变更
@@ -1177,9 +1179,331 @@ http://localhost/consumer/payment/zk
 
 ### consul相关项目
 
+![1660216987745](README.assets/1660216987745.png)
+
+#### 基本项目架构
+
+```txt
+cloud2020
+	cloud-providerconsul-payment8006	服务提供者8006
+	cloud-consumerconsul-order80		服务消费者80
+```
+
 <img src="https://cloudimgs-1301504220.cos.ap-nanjing.myqcloud.com/image/202202272259322.png" alt="image-20220227225915255" style="zoom:80%;" />
 
-### 三个注册中心的对比
+#### 1、原理
+
+> https://www.consul.io/intro/index.html
+
+##### 是什么
+
+![1660217067343](README.assets/1660217067343.png)
+
+Consul 是一套开源的分布式服务发现和配置管理系统，由 HashiCorp 公司用 ==Go 语言开发==。
+
+提供了微服务系统中的服务治理、配置中心、控制总线等功能。这些功能中的每一个都可以根据需要单独使用，也可以一起使用以构建全方位的服务网格，总之Consul提供了一种完整的服务网格解决方案。
+
+它具有很多优点。包括： 基于 raft 协议，比较简洁； 支持健康检查, 同时支持 HTTP 和 DNS 协议 支持跨数据中心的 WAN 集群 提供图形界面 跨平台，支持 Linux、Mac、Windows
+
+
+
+##### 做什么
+
+![1660217240530](README.assets/1660217240530.png)
+
+Spring Cloud Consul 具有如下特性：
+
+![1660217221161](README.assets/1660217221161.png)
+
+##### 怎么用
+
+https://www.springcloud.cc/spring-cloud-consul.html
+
+
+
+#### 2、安装并运行Consul
+
+![1660217391535](README.assets/1660217391535.png)
+
+查看版本
+
+![1660217406773](README.assets/1660217406773.png)
+
+结果页面
+
+![1660217425565](README.assets/1660217425565.png)
+
+#### 3、项目搭建
+
+（1）新建Module支付服务provider8006
+
+改pom
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>cloud2020</artifactId>
+        <groupId>com.adun.springcloud</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+
+    <artifactId>cloud-providerconsul-payment8006</artifactId>
+
+
+    <dependencies>
+        <!--SpringCloud consul-server -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-consul-discovery</artifactId>
+        </dependency>
+        <!-- SpringBoot整合Web组件 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <!--日常通用jar包配置-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <scope>runtime</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
+```
+
+写yml
+
+```yaml
+###consul服务端口号
+server:
+  port: 8006
+
+spring:
+  application:
+    name: consul-provider-payment
+  ####consul注册中心地址
+  cloud:
+    consul:
+      host: localhost
+      port: 8500
+      discovery:
+        #hostname: 127.0.0.1
+        service-name: ${spring.application.name}
+
+```
+
+主启动
+
+```java
+@SpringBootApplication
+@EnableDiscoveryClient //该注解用于向使用consul或者zookeeper作为注册中心时注册服务
+public class PaymentMain8006 {
+
+    public static void main(String[] args) {
+        SpringApplication.run(PaymentMain8006.class, args);
+    }
+
+}
+```
+
+业务类
+
+```java
+@RestController
+public class PaymentController
+{
+    @Value("${server.port}")
+    private String serverPort;
+
+    @RequestMapping(value = "/payment/consul")
+    public String paymentzk()
+    {
+        return "springcloud with consul: "+serverPort+"\t"+ UUID.randomUUID().toString();
+    }
+}
+
+```
+
+验证测试
+
+http://localhost:8006/payment/consul
+
+![1660217820544](README.assets/1660217820544.png)
+
+
+
+（2）新建Module消费服务order80
+
+改pom
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>cloud2020</artifactId>
+        <groupId>com.adun.springcloud</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>cloud-consumerconsul-order80</artifactId>
+
+    <dependencies>
+        <!--common-->
+        <dependency>
+            <groupId>com.adun.springcloud</groupId>
+            <artifactId>cloud-api-commons</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!--SpringCloud consul-server -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-consul-discovery</artifactId>
+        </dependency>
+        <!-- SpringBoot整合Web组件 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <!--日常通用jar包配置-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <scope>runtime</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
+
+```
+
+写yml
+
+```yaml
+###consul服务端口号
+server:
+  port: 80
+
+spring:
+  application:
+    name: cloud-consumer-order
+  ####consul注册中心地址
+  cloud:
+    consul:
+      host: localhost
+      port: 8500
+      discovery:
+        #hostname: 127.0.0.1
+        service-name: ${spring.application.name}
+```
+
+主启动
+
+```java
+@SpringBootApplication
+@EnableDiscoveryClient
+public class OrderConsulMain80 {
+    public static void main(String[] args) {
+        SpringApplication.run(OrderConsulMain80.class, args);
+    }
+}
+```
+
+业务类
+
+配置bean
+
+```java
+@Configuration
+public class ApplicationContextBean
+{
+    @Bean
+    @LoadBalanced
+    public RestTemplate getRestTemplate()
+    {
+        return new RestTemplate();
+    }
+}
+```
+
+controller
+
+```java
+@RestController
+public class OrderConsulController
+{
+    public static final String INVOKE_URL = "http://cloud-provider-payment"; //consul-provider-payment
+
+    @Autowired
+    private RestTemplate restTemplate;
+
+    @GetMapping(value = "/consumer/payment/consul")
+    public String paymentInfo()
+    {
+        String result = restTemplate.getForObject(INVOKE_URL+"/payment/consul", String.class);
+        System.out.println("消费者调用支付服务(consule)--->result:" + result);
+        return result;
+    }
+}
+
+```
+
+验证测试
+
+http://localhost/consumer/payment/consul
+
+![1660217979128](README.assets/1660217979128.png)
+
+### 三个注册中心的异同点
+
+![1660218033204](README.assets/1660218033204.png)
+
+##### 经典CAP
+
+==最多只能同时较好的满足两个。==
+ CAP理论的核心是：==一个分布式系统不可能同时很好的满足一致性，可用性和分区容错性这三个需求，==
+
+因此，根据 CAP 原理将 NoSQL 数据库分成了满足 CA 原则、满足 CP 原则和满足 AP 原则三 大类：
+CA - 单点集群，满足一致性，可用性的系统，通常在可扩展性上不太强大。
+CP - 满足一致性，分区容忍必的系统，通常性能不是特别高。
+AP - 满足可用性，分区容忍性的系统，通常可能对一致性要求低一些。
 
 <img src="https://cloudimgs-1301504220.cos.ap-nanjing.myqcloud.com/image/202202272308504.png" alt="image-20220227230802462" style="zoom:67%;" />
 
@@ -1188,6 +1512,24 @@ http://localhost/consumer/payment/zk
 
 
 
+
+#### AP(Eureka)
+
+AP架构
+当网络分区出现后，为了保证可用性，系统B==可以返回旧值==，保证系统的可用性。
+==结论：违背了一致性C的要求，只满足可用性和分区容错，即AP==
+
+![1660218227773](README.assets/1660218227773.png)
+
+
+
+#### CP(Zookeeper/Consul)
+
+CP架构
+当网络分区出现后，为了保证一致性，就必须拒接请求，否则无法保证一致性
+==结论：违背了可用性A的要求，只满足一致性和分区容错，即CP==
+
+![1660218259751](README.assets/1660218259751.png)
 
 
 
