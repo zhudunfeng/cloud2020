@@ -500,7 +500,43 @@ eureka:
 
 ##### 7、负载均衡环境搭建测试
 
-###### （1）支付服务提供者8001集群环境构建
+###### （1）支付服务提供者8001/8002集群环境构建
+
+修改yml【注册中心为集群需要特别配置】
+
+> 是否从EurekaServer抓取已有的注册信息，默认为true。单节点无所谓，集群必须设置为true才能配合ribbon使用负载均衡
+>     fetchRegistry: true
+
+```yaml
+server:
+  port: 8002
+
+spring:
+  application:
+    name: cloud-payment-service
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource            # 当前数据源操作类型
+    driver-class-name: org.gjt.mm.mysql.Driver              # mysql驱动包
+    url: jdbc:mysql://localhost:3306/db2019?useUnicode=true&characterEncoding=utf-8&useSSL=false
+    username: root
+    password: 123456
+
+eureka:
+  client:
+    #表示是否将自己注册进EurekaServer默认为true。
+    register-with-eureka: true
+    #是否从EurekaServer抓取已有的注册信息，默认为true。单节点无所谓，集群必须设置为true才能配合ribbon使用负载均衡
+    fetchRegistry: true
+    service-url:
+      defaultZone: http://eureka7001.com:7001/eureka,http://eureka7002.com:7002/eureka  # 集群版
+      #defaultZone: http://localhost:7001/eureka  # 单机版
+
+
+mybatis:
+  mapperLocations: classpath:mapper/*.xml
+  type-aliases-package: com.atguigu.springcloud.entities    # 所有Entity别名类所在包
+
+```
 
 修改8001/8002的Controller,返回当前服务的端口名
 
@@ -1530,6 +1566,532 @@ CP架构
 ==结论：违背了可用性A的要求，只满足一致性和分区容错，即CP==
 
 ![1660218259751](README.assets/1660218259751.png)
+
+
+
+
+
+## 微服务负载均衡组件
+
+### Ribbon负载均衡服务调用
+
+![1660218861061](README.assets/1660218861061.png)
+
+#### 基本项目架构
+
+```
+cloud2020
+	cloud-api-commons  服务提供与消费共同使用的相关类
+	cloud-eureka-server7001    服务注册中心7001
+	cloud-eureka-server7002	   服务注册中线7002
+	cloud-consumer-oreder80    服务消费80
+	cloud-provider-payment8001 服务提供8001
+	cloud-provider-payment8002 服务提供8002
+```
+
+#### 1、概述
+
+##### （1）是什么
+
+Spring Cloud Ribbon是基于Netflix Ribbon实现的一套==客户端       负载均衡的工具==。
+
+简单的说，Ribbon是Netflix发布的开源项目，主要功能是提供==客户端的软件负载均衡算法和服务调用==。Ribbon客户端组件提供一系列完善的配置项如连接超时，重试等。简单的说，就是在配置文件中列出Load Balancer（简称LB）后面所有的机器，Ribbon会自动的帮助你基于某种规则（如简单轮询，随机连接等）去连接这些机器。我们很容易使用Ribbon实现自定义的负载均衡算法。
+
+
+
+##### （2）官网资料
+
+https://github.com/Netflix/ribbon/wiki/Getting-Started
+
+Ribbon目前也进入维护模式
+
+![1660219009331](README.assets/1660219009331.png)
+
+未来替换方案
+
+![](README.assets/图片.jpeg)
+
+
+
+##### （3）能做什么
+
+![1660219258563](README.assets/1660219258563.png)
+
+集中式LB
+
+即在服务的消费方和提供方之间使用独立的LB设施(可以是硬件，如F5, 也可以是软件，如nginx), 由该设施负责把访问请求通过某种策略转发至服务的提供方；
+
+
+
+进程内LB
+
+将LB逻辑集成到消费方，消费方从服务注册中心获知有哪些地址可用，然后自己再从这些地址中选择出一个合适的服务器。
+
+==Ribbon就属于进程内LB==，它只是一个类库，==集成于消费方进程==，消费方通过它来获取到服务提供方的地址。
+
+
+
+#### 2、Ribbon负载均衡演示
+
+##### （1）架构说明
+
+![1660228668284](README.assets/1660228668284.png)
+
+
+
+Ribbon在工作时分成两步
+
+第一步先选择 EurekaServer ,它优先选择在同一个区域内负载较少的server.
+
+第二步再根据用户指定的策略，==在从server取到的服务注册列表中选择一个地址==。
+其中Ribbon提供了多种策略：比如轮询、随机和根据响应时间加权。
+
+总结：Ribbon其实就是一个软负载均衡的客户端组件，
+他可以和其他所需请求的客户端结合使用，和eureka结合只是其中的一个实例
+
+
+
+##### （2）pom说明【springboot的eureka-client的starter集成了ribbon】
+
+之前写样例时候没有引入spring-cloud-starter-ribbon也可以使用ribbon,
+
+```xml
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-netflix-ribbon</artifactId>
+</dependency>
+```
+
+猜测spring-cloud-starter-netflix-eureka-client自带了spring-cloud-starter-ribbon引用，
+证明如下： ==可以看到spring-cloud-starter-netflix-eureka-client 确实引入了Ribbon==
+
+![1660228926991](README.assets/1660228926991.png)
+
+
+
+##### （3）使用RestTemplate+Eurka+Ribbon实现负载均衡
+
+> 查看: 
+>
+> Eureka项目相关 》集群Eureka构建步骤》负载均衡环境搭建测试
+
+
+
+#### 3、Ribbon核心组件IRule
+
+##### （1）IRule：根据特定算法中从服务列表中选取一个要访问的服务
+
+![1660229915271](README.assets/1660229915271.png)
+
+![1660229958538](README.assets/1660229958538.png)
+
+```java
+com.netflix.loadbalancer.RoundRobinRule		轮询
+
+com.netflix.loadbalancer.RandomRule			随机
+
+com.netflix.loadbalancer.RetryRule			
+先按照RoundRobinRule的策略获取服务，如果获取服务失败则在指定时间内会进行重试，获取可用的服务
+
+WeightedResponseTimeRule					
+对RoundRobinRule的扩展，响应速度越快的实例选择权重越大，越容易被选择
+
+BestAvailableRule
+会先过滤掉由于多次访问故障而处于断路器跳闸状态的服务，然后选择一个并发量最小的服务
+
+AvailabilityFilteringRule
+先过滤掉故障实例，再选择并发较小的实例
+
+ZoneAvoidanceRule
+默认规则,复合判断server所在区域的性能和server的可用性选择服务器
+```
+
+##### (2)如何替换(自定义负载均衡算法)
+
+![1660230286826](README.assets/1660230286826.png)
+
+
+
+###### （1）注意配置细节
+
+> 官方文档明确给出了警告：
+> 这个自定义配置类不能放在@ComponentScan所扫描的当前包下以及子包下，
+> 否则我们自定义的这个配置类就会被所有的Ribbon客户端所共享，达不到特殊化定制的目的了
+
+![1660230309168](README.assets/1660230309168.png)
+
+###### （2）新建package【注意位置】
+
+![1660230452595](README.assets/1660230452595.png)
+
+
+
+
+
+###### （3）上面包下新建MySelfRule规则类
+
+```java
+@Configuration
+public class MySelfRule
+{
+    @Bean
+    public IRule myRule()
+    {
+        return new RandomRule();//定义为随机
+    }
+}
+```
+
+###### （4）主启动类添加`@RibbonClient`
+
+```java
+//自定义ribbon负载均衡算法
+//分别指定多个服务调用负载均衡算法
+//@RibbonClients(value = {
+//        @RibbonClient(name = "CLOUD-PAYMENT-SERVICE",configuration= MySelfRule.class),
+//        @RibbonClient(name = "CLOUD-PAYMENT-SERVICE",configuration= MySelfRule.class)})
+//指定单个服务调用负载均衡算法
+@RibbonClient(name = "CLOUD-PAYMENT-SERVICE",configuration= MySelfRule.class)
+public class OrderMain80 {
+    public static void main(String[] args) {
+        SpringApplication.run(OrderMain80.class, args);
+    }
+}
+```
+
+###### （5）测试
+
+http://localhost/consumer/payment/get/31
+
+
+
+
+
+
+
+#### 4、Ribbon负载均衡算法
+
+![1660230777089](README.assets/1660230777089.png)
+
+
+
+##### （1）原理
+
+==负载均衡算法：rest接口第几次请求数 % 服务器集群总数量 = 实际调用服务器位置下标  ，每次服务重启动后rest接口计数从1开始。==
+
+`List<ServiceInstance> instances = discoveryClient.getInstances("CLOUD-PAYMENT-SERVICE");`
+
+如：   List [0] instances = 127.0.0.1:8002
+　　　List [1] instances = 127.0.0.1:8001
+
+8001+ 8002 组合成为集群，它们共计2台机器，集群总数为2， 按照轮询算法原理：
+
+当总请求数为1时： 1 % 2 =1 对应下标位置为1 ，则获得服务地址为127.0.0.1:8001
+当总请求数位2时： 2 % 2 =0 对应下标位置为0 ，则获得服务地址为127.0.0.1:8002
+当总请求数位3时： 3 % 2 =1 对应下标位置为1 ，则获得服务地址为127.0.0.1:8001
+当总请求数位4时： 4 % 2 =0 对应下标位置为0 ，则获得服务地址为127.0.0.1:8002
+如此类推......
+
+##### (2)RoundRobinRule源码
+
+```java
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by Fernflower decompiler)
+//
+
+package com.netflix.loadbalancer;
+
+import com.netflix.client.config.IClientConfig;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class RoundRobinRule extends AbstractLoadBalancerRule {
+    private AtomicInteger nextServerCyclicCounter;
+    private static final boolean AVAILABLE_ONLY_SERVERS = true;
+    private static final boolean ALL_SERVERS = false;
+    private static Logger log = LoggerFactory.getLogger(RoundRobinRule.class);
+
+    public RoundRobinRule() {
+        this.nextServerCyclicCounter = new AtomicInteger(0);
+    }
+
+    public RoundRobinRule(ILoadBalancer lb) {
+        this();
+        this.setLoadBalancer(lb);
+    }
+
+    public Server choose(ILoadBalancer lb, Object key) {
+        if (lb == null) {
+            log.warn("no load balancer");
+            return null;
+        } else {
+            Server server = null;
+            int count = 0;
+
+            while(true) {
+                if (server == null && count++ < 10) {
+                    //获取所有启用并可访问的服务器
+                    List<Server> reachableServers = lb.getReachableServers();
+                    //获取所有已知服务器（可达和不可达的）
+                    List<Server> allServers = lb.getAllServers();
+                    //可达服务器总数
+                    int upCount = reachableServers.size();
+                    //所有服务器总数
+                    int serverCount = allServers.size();
+                    if (upCount != 0 && serverCount != 0) {
+                        int nextServerIndex = this.incrementAndGetModulo(serverCount);
+                        server = (Server)allServers.get(nextServerIndex);
+                        if (server == null) {
+                            Thread.yield();
+                        } else {
+                            if (server.isAlive() && server.isReadyToServe()) {
+                                return server;
+                            }
+
+                            server = null;
+                        }
+                        continue;
+                    }
+
+                    log.warn("No up servers available from load balancer: " + lb);
+                    return null;
+                }
+
+                if (count >= 10) {
+                    log.warn("No available alive servers after 10 tries from load balancer: " + lb);
+                }
+
+                return server;
+            }
+        }
+    }
+
+    
+    private int incrementAndGetModulo(int modulo) {
+        int current;
+        int next;
+        do {
+            current = this.nextServerCyclicCounter.get();
+            //核心就是取模
+            next = (current + 1) % modulo;
+        } while(!this.nextServerCyclicCounter.compareAndSet(current, next));
+
+        return next;
+    }
+
+    public Server choose(Object key) {
+        return this.choose(this.getLoadBalancer(), key);
+    }
+
+    public void initWithNiwsConfig(IClientConfig clientConfig) {
+    }
+}
+
+```
+
+##### （3）手写
+
+> 自己试着写一个本地负载均衡器试试
+
+![1660232423375](README.assets/1660232423375.png)
+
+- eureka-server    7001/7002集群启动
+
+- 8001/8002微服务改造
+
+  controller
+
+  ```java
+  @RestController
+  @Slf4j
+  @RequestMapping(value ="/payment")
+  public class PaymentController {
+  
+      @Resource
+      private PaymentService paymentService;
+  
+      @Value("${server.port}")
+      private String port;
+  
+      @Resource
+      private DiscoveryClient discoveryClient;
+  
+      @PostMapping(value = "/create")
+      public CommonResult create(@RequestBody Payment payment){
+          int result = paymentService.create(payment);
+          log.info("*****插入操作返回结果:" + result);
+          if(result>0){
+              return new CommonResult(200,"插入数据库成功:ServerPort:"+port,result);
+          }else{
+              return new CommonResult(444,"插入数据库失败",null);
+          }
+      }
+  
+      @GetMapping(value = "/get/{id}")
+      public CommonResult<Payment> getPaymentById(@PathVariable("id") Long id){
+          Payment payment = paymentService.getPaymentById(id);
+          log.info("*****查询结果:{}",payment);
+          if (payment != null) {
+              return new CommonResult(200,"查询成功:ServerPort:"+port,payment);
+          }else {
+              return new CommonResult(444,"没有对应记录,查询ID: "+id,null);
+          }
+      }
+  
+      @GetMapping(value = "/discovery")
+      public Object discovery(){
+          List<String> services = discoveryClient.getServices();
+          for (String service : services) {
+              log.info("****service:{}",service);
+          }
+  
+          List<ServiceInstance> instances = discoveryClient.getInstances("CLOUD-PAYMENT-SERVICE");
+          for (ServiceInstance instance : instances) {
+              log.info(instance.getServiceId()+"\t"+instance.getHost()+"\t"+instance.getPort()+"\t"+instance.getUri());
+          }
+  
+          return this.discoveryClient;
+      }
+  
+      
+      //负载均衡测试
+      @GetMapping(value = "/lb")
+      public String getPaymentLB(){
+          return port;
+      }
+  
+  }
+  
+  ```
+
+- 80订单微服务改造
+
+  (i)ApplicationContextBean去掉注解@LoadBalanced)
+
+  ```java
+  @Configuration
+  public class ApplicationContextBean
+  {
+      @Bean
+      //@LoadBalanced
+      public RestTemplate getRestTemplate()
+      {
+          return new RestTemplate();
+      }
+  }
+  ```
+
+  
+
+  (ii)LoadBalancer接口
+
+  ```java
+  public interface LoadBalancer
+  {
+      ServiceInstance instances(List<ServiceInstance> serviceInstances);
+  }
+  ```
+
+  (iii)MyLB
+
+  ```java
+  @Component
+  public class MyLB implements LoadBalancer
+  {
+      private AtomicInteger atomicInteger = new AtomicInteger(0);
+  
+      public final int getAndIncrement()
+      {
+          int current;
+          int next;
+          do
+          {
+              current = this.atomicInteger.get();
+              next = current >= 2147483647 ? 0 : current + 1;
+          } while(!this.atomicInteger.compareAndSet(current, next));
+          System.out.println("*****next: "+next);
+          return next;
+      }
+  
+  
+      @Override
+      public ServiceInstance instances(List<ServiceInstance> serviceInstances)
+      {
+          int index = getAndIncrement() % serviceInstances.size();
+          return serviceInstances.get(index);
+      }
+  }
+  ```
+
+  (iv)OrderController
+
+  ```java
+  @RestController
+  public class OrderController
+  {
+      //public static final String PAYMENT_SRV = "http://localhost:8001";
+      public static final String PAYMENT_SRV = "http://CLOUD-PAYMENT-SERVICE";
+  
+      @Resource
+      private RestTemplate restTemplate;
+      //可以获取注册中心上的服务列表
+      @Resource
+      private DiscoveryClient discoveryClient;
+      @Resource
+      private LoadBalancer loadBalancer;
+  
+      @GetMapping("/consumer/payment/create")
+      public CommonResult<Payment> create(Payment payment)
+      {
+          return restTemplate.postForObject(PAYMENT_SRV+"/payment/create",payment,CommonResult.class);
+      }
+  
+      @GetMapping("/consumer/payment/get/{id}")
+      public CommonResult<Payment> getPayment(@PathVariable("id") Long id)
+      {
+          return restTemplate.getForObject(PAYMENT_SRV+"/payment/get/"+id,CommonResult.class);
+      }
+  
+      @GetMapping("/consumer/payment/getForEntity/{id}")
+      public CommonResult<Payment> getPayment2(@PathVariable("id") Long id)
+      {
+          ResponseEntity<CommonResult> entity = restTemplate.getForEntity(PAYMENT_SRV+"/payment/get/"+id, CommonResult.class);
+          if(entity.getStatusCode().is2xxSuccessful()){
+              return entity.getBody();
+          }else {
+              return new CommonResult(444, "操作失败");
+          }
+      }
+   
+   
+   	//自定义负载均衡算法
+      @Resource
+      private LoadBalancer loadBalancer;
+  
+      @GetMapping("/consumer/payment/lb")
+      public String getPaymentLB()
+      {
+          List<ServiceInstance> instances = discoveryClient.getInstances("CLOUD-PAYMENT-SERVICE");
+  
+          if(instances == null || instances.size()<=0) {
+              return null;
+          }
+          ServiceInstance serviceInstance = loadBalancer.instances(instances);
+          URI uri = serviceInstance.getUri();
+  
+          return restTemplate.getForObject(uri+"/payment/lb",String.class);
+      }
+  }
+  ```
+
+  (v)测试
+
+  http://localhost/consumer/payment/lb
+
+
 
 
 
