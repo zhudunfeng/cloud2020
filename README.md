@@ -3338,6 +3338,16 @@ public String str_fallbackMethod()
 
 ![1660320599638](README.assets/1660320599638.png)
 
+###### 基本项目结构
+
+```
+cloud2020
+	cloud-consumer-hystrix-dashboard9001
+	cloud-provider-hystrix-payment8001
+```
+
+
+
 ###### 概述
 
 除了隔离依赖服务的调用以外，Hystrix还提供了<mark>准实时的调用监控（Hystrix Dashboard）</mark>，Hystrix会持续地记录所有通过Hystrix发起的请求的执行信息，并以统计报表和图形的形式展示给用户，包括每秒执行多少请求多少成功，多少失败等。Netflix通过hystrix-metrics-event-stream项目实现了对以上指标的监控。Spring Cloud也提供了Hystrix Dashboard的整合，对监控内容转化成可视化界面。
