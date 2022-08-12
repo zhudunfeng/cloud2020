@@ -1,5 +1,3 @@
-
-
 # SpringCloud
 
 SpringCloud2020年的技术变更
@@ -16,10 +14,6 @@ SpringCloudNetflix组件大部分进入维护状态，从而Spring官方推荐�
 
 ![image-20220308163942294](https://cloudimgs-1301504220.cos.ap-nanjing.myqcloud.com/image/202203081639345.png)
 
-
-
-
-
 ## 微服务架构编码构建
 
 ### 未引入服务注册与发现组件实现服务调用(RestTemplate)
@@ -32,12 +26,10 @@ SpringCloudNetflix组件大部分进入维护状态，从而Spring官方推荐�
 
 ```txt
 cloud2020
-	cloud-api-commons  服务提供与消费共同使用的相关类
-	cloud-consumer-oreder80    服务消费80
-	cloud-provider-payment8001 服务提供8001
+    cloud-api-commons  服务提供与消费共同使用的相关类
+    cloud-consumer-oreder80    服务消费80
+    cloud-provider-payment8001 服务提供8001
 ```
-
-
 
 ![image-20220227111214723](https://cloudimgs-1301504220.cos.ap-nanjing.myqcloud.com/image/202202271112780.png)
 
@@ -102,33 +94,29 @@ public class OrderController {
         return restTemplate.getForObject(PAYMENT_URL + "/payment/get/{id}", CommonResult.class,map);
     }
 }
-
 ```
-
-
 
 ## 微服务注册中心
 
 1. 什么是服务治理　
-
+   
    ​        Spring Cloud 封装了 Netflix 公司开发的 Eureka 模块来实现服务治理
-
+   
    ​       在传统的rpc远程调用框架中，管理每个服务与服务之间依赖关系比较复杂，管理比较复杂，所以需要使用服务治理，==管理服务于服务之间依赖关系==，可以实现服务调用、负载均衡、容错等，实现服务发现与注册。
 
 2. 什么是服务注册与发现
+   
            Eureka采用了CS的设计架构，Eureka Server 作为服务注册功能的服务器，它是服务注册中心。而系统中的其他微服务，使用 Eureka的客户端连接到 Eureka Server并维持心跳连接。这样系统的维护人员就可以通过 Eureka Server 来监控系统中各个微服务是否正常运行。
-
+   
    ​        在服务注册与发现中，有一个注册中心。当服务器启动的时候，会把当前自己服务器的信息 比如 服务地址通讯地址等以别名方式注册到注册中心上。另一方（消费者|服务提供者），以该别名的方式去注册中心上获取到实际的服务通讯地址，然后再实现本地RPC调用RPC远程调用框架核心设计思想：在于注册中心，因为使用注册中心管理每个服务与服务之间的一个依赖关系(服务治理概念)。在任何rpc远程框架中，都会有一个注册中心(存放服务地址相关信息(接口地址))
-
-   ​	下左图是Eureka系统架构，右图是Dubbo的架构，请对比
-
+   
+   ​    下左图是Eureka系统架构，右图是Dubbo的架构，请对比
+   
    ![1660210993916](README.assets/1660210993916.png)
 
 ### Eureka项目相关
 
 ![1660215822047](README.assets/1660215822047.png)
-
-
 
 Eureka包含两个组件：==Eureka Server==和==Eureka Client==
 
@@ -140,19 +128,17 @@ Eureka包含两个组件：==Eureka Server==和==Eureka Client==
 
 #### 单机Eureka构建步骤
 
->此时，项目未引入SpringCloud的服务注册与发现组件，服务之间的调用使用restTemplate进行相互调用
+> 此时，项目未引入SpringCloud的服务注册与发现组件，服务之间的调用使用restTemplate进行相互调用
 
 ##### 1、项目架构
 
 ```
 cloud2020
-	cloud-api-commons  服务提供与消费共同使用的相关类
-	cloud-eureka-server7001    服务注册中心7001
-	cloud-consumer-oreder80    服务消费80
-	cloud-provider-payment8001 服务提供8001
+    cloud-api-commons  服务提供与消费共同使用的相关类
+    cloud-eureka-server7001    服务注册中心7001
+    cloud-consumer-oreder80    服务消费80
+    cloud-provider-payment8001 服务提供8001
 ```
-
-
 
 ##### 2、构建cloud-eureka-server7001
 
@@ -204,12 +190,6 @@ public class EurekaMain7001
 http://localhost:7001/
 
 ![1660211707392](README.assets/1660211707392.png)
-
-
-
-
-
-
 
 ##### 3、EurekaClient端cloud-provider-payment8001
 
@@ -266,8 +246,6 @@ public class PaymentMain8001
 }
 ```
 
-
-
 ##### 4、EurekaClient端cloud-consumer-order80
 
 将注册进EurekaServer成为服务消费者consumer
@@ -316,15 +294,9 @@ public class OrderMain80
 }
 ```
 
-
-
 ##### 5、测试
 
 ![1660212263255](README.assets/1660212263255.png)
-
-
-
-
 
 #### 集群Eureka构建步骤
 
@@ -332,32 +304,29 @@ public class OrderMain80
 
 ```
 cloud2020
-	cloud-api-commons  服务提供与消费共同使用的相关类
-	cloud-eureka-server7001    服务注册中心7001
-	cloud-eureka-server7002	   服务注册中线7002
-	cloud-consumer-oreder80    服务消费80
-	cloud-provider-payment8001 服务提供8001
-	cloud-provider-payment8002 服务提供8002
+    cloud-api-commons  服务提供与消费共同使用的相关类
+    cloud-eureka-server7001    服务注册中心7001
+    cloud-eureka-server7002       服务注册中线7002
+    cloud-consumer-oreder80    服务消费80
+    cloud-provider-payment8001 服务提供8001
+    cloud-provider-payment8002 服务提供8002
 ```
 
 <img src="https://cloudimgs-1301504220.cos.ap-nanjing.myqcloud.com/image/202202271342914.png" alt="image-20220227134225873" style="zoom:50%;" />
-
-
 
 ##### 2、eureka server集群基本原理与实现
 
 ![1660212472671](README.assets/1660212472671.png)
 
 - [ ] 问题：微服务RPC远程服务调用最核心的是什么 ?
+  
          高可用，试想你的注册中心只有一个only one， 它出故障了那就呵呵(￣▽￣)"了，会导致整个为服务环境不可用，所以
-
+  
   ==解决办法：搭建Eureka注册中心集群 ，实现负载均衡+故障容错==
 
 <img src="https://cloudimgs-1301504220.cos.ap-nanjing.myqcloud.com/image/202202271725855.png" alt="image-202202271725855" style="zoom:67%;" />
 
 <img src="https://cloudimgs-1301504220.cos.ap-nanjing.myqcloud.com/image/202202271419150.png" alt="image-202202271419150" style="zoom:67%;" />
-
-
 
 ##### 3、EurekaServer集群环境构建步骤
 
@@ -425,8 +394,6 @@ public class EurekaMain7002
 }
 ```
 
-
-
 ##### 4、将支付服务8001微服务发布到上面2台Eureka集群配置中
 
 改yml
@@ -461,10 +428,6 @@ mybatis:
   type-aliases-package: com.atguigu.springcloud.entities    # 所有Entity别名类所在包
 ```
 
-
-
-
-
 ##### 5、将订单服务80微服务发布到上面2台Eureka集群配置中
 
 改yml
@@ -488,15 +451,9 @@ eureka:
       defaultZone: http://eureka7001.com:7001/eureka,http://eureka7002.com:7002/eureka  # 集群版
 ```
 
-
-
 ##### 6、测试01
 
 ![1660213332102](README.assets/1660213332102.png)
-
-
-
-
 
 ##### 7、负载均衡环境搭建测试
 
@@ -535,13 +492,11 @@ eureka:
 mybatis:
   mapperLocations: classpath:mapper/*.xml
   type-aliases-package: com.atguigu.springcloud.entities    # 所有Entity别名类所在包
-
 ```
 
 修改8001/8002的Controller,返回当前服务的端口名
 
 ```java
-
 @RestController
 @Slf4j
 public class PaymentController
@@ -580,18 +535,14 @@ public class PaymentController
 }
 ```
 
-
-
 ###### （2）订单服务访问地址不能写死
 
 ```java
 //public static final String PAYMENT_SRV = "http://localhost:8001";
- 
+
 // 通过在eureka上注册过的微服务名称调用
 public static final String PAYMENT_SRV = "http://CLOUD-PAYMENT-SERVICE";
 ```
-
-
 
 ###### （3）使用@LoadBalanced注解赋予RestTemplate负载均衡的能力
 
@@ -610,17 +561,9 @@ public class ApplicationContextBean
 }
 ```
 
-
-
 ###### （4）测试02
 
 ![1660214046026](README.assets/1660214046026.png)
-
-
-
-
-
-
 
 #### actuator微服务信息完善
 
@@ -651,8 +594,6 @@ eureka:
 
 ![1660214366193](README.assets/1660214366193.png)
 
-
-
 ###### （2）访问信息有IP信息提示
 
 问题
@@ -676,11 +617,7 @@ eureka:
     prefer-ip-address: true     #访问路径可以显示IP地址
 ```
 
-
-
 ![1660214472156](README.assets/1660214472156.png)
-
-
 
 #### 服务发现Discovery
 
@@ -766,12 +703,7 @@ public class PaymentController
         return this.discoveryClient;
     }
 }
- 
- 
-
 ```
-
-
 
 ##### （2）8001主启动类添加注解`@EnableDiscoveryClient`
 
@@ -786,14 +718,11 @@ public class PaymentMain8001
         SpringApplication.run(PaymentMain8001.class,args);
     }
 }
-
 ```
 
 ##### （3）自测
 
 ![1660214912458](README.assets/1660214912458.png)
-
-
 
 #### Eureka自我保护
 
@@ -809,26 +738,21 @@ RENEWALS ARE LESSER THAN THRESHOLD AND HENCE THE INSTANCES ARE NOT BEING EXPIRED
 
 ![1660215009699](README.assets/1660215009699.png)
 
- 
-
 ##### 2、导致原因
 
->总结：
->
->一句话：某时刻某一个微服务不可用了，Eureka不会立刻清理，依旧会对该微服务的信息进行保存
->
->属于CAP里面的AP分支
+> 总结：
+> 
+> 一句话：某时刻某一个微服务不可用了，Eureka不会立刻清理，依旧会对该微服务的信息进行保存
+> 
+> 属于CAP里面的AP分支
 
 为什么会产生Eureka自我保护机制？
 
 为了防止EurekaClient可以正常运行，但是 与 EurekaServer网络不通情况下，EurekaServer不会立刻将EurekaClient服务剔除
 
-
-
 什么是自我保护模式？
 
 默认情况下，如果EurekaServer在一定时间内没有接收到某个微服务实例的心跳，EurekaServer将会注销该实例（默认90秒）。但是当网络分区故障发生(延时、卡顿、拥挤)时，微服务与EurekaServer之间无法正常通信，以上行为可能变得非常危险了——因为微服务本身其实是健康的，此时本不应该注销这个微服务。Eureka通过“自我保护模式”来解决这个问题——当EurekaServer节点在短时间内丢失过多客户端时（可能发生了网络分区故障），那么这个节点就会进入自我保护模式。
-
 
 在自我保护模式中，Eureka Server会保护服务注册表中的信息，不再注销任何服务实例。
 它的设计哲学就是宁可保留错误的服务注册信息，也不盲目注销任何可能健康的服务实例。一句话讲解：好死不如赖活着
@@ -837,7 +761,7 @@ RENEWALS ARE LESSER THAN THRESHOLD AND HENCE THE INSTANCES ARE NOT BEING EXPIRED
 
  ![1660215089163](README.assets/1660215089163.png)
 
-#####  3、怎么禁止自我保护
+##### 3、怎么禁止自我保护
 
 ###### （1）注册中心eureakeServer端7001
 
@@ -872,7 +796,7 @@ eureka:
 
 ![1660215254444](README.assets/1660215254444.png)
 
-######  
+###### 
 
 ###### （2）生产者客户端eureakeClient端8001
 
@@ -907,13 +831,9 @@ eureka:
     lease-expiration-duration-in-seconds: 2
 ```
 
- 
-
 ### zookeeper相关项目
 
 ![1660215864730](README.assets/1660215864730.png)
-
-
 
 #### 1、基本项目架构
 
@@ -923,8 +843,8 @@ eureka:
 
 ```txt
 cloud2020
-	cloud-provider-payment8004		服务提供者8004
-	cloud-consumerzk-order80		服务消费者80
+    cloud-provider-payment8004        服务提供者8004
+    cloud-consumerzk-order80        服务消费者80
 ```
 
 <img src="https://cloudimgs-1301504220.cos.ap-nanjing.myqcloud.com/image/202202272257070.png" alt="image-20220227225729931" style="zoom:80%;" />
@@ -999,7 +919,6 @@ cloud2020
         </dependency>
     </dependencies>
 </project>
-
 ```
 
 写yml
@@ -1055,19 +974,13 @@ http://localhost:8004/payment/zk
 
 ![1660216388381](README.assets/1660216388381.png)
 
-
-
 验证测试2
 
 ![1660216470623](README.assets/1660216470623.png)
 
-
-
 思考：服务节点是临时节点还是持久节点
 
 临时节点
-
-
 
 ##### （2）新建cloud-consumerzk-order80
 
@@ -1198,20 +1111,15 @@ public class OrderZKController
     }
 
 }
-
 ```
 
 验证测试
 
 ![1660216702504](README.assets/1660216702504.png)
 
-
-
 访问测试地址
 
 http://localhost/consumer/payment/zk
-
-
 
 ### consul相关项目
 
@@ -1221,8 +1129,8 @@ http://localhost/consumer/payment/zk
 
 ```txt
 cloud2020
-	cloud-providerconsul-payment8006	服务提供者8006
-	cloud-consumerconsul-order80		服务消费者80
+    cloud-providerconsul-payment8006    服务提供者8006
+    cloud-consumerconsul-order80        服务消费者80
 ```
 
 <img src="https://cloudimgs-1301504220.cos.ap-nanjing.myqcloud.com/image/202202272259322.png" alt="image-20220227225915255" style="zoom:80%;" />
@@ -1241,8 +1149,6 @@ Consul 是一套开源的分布式服务发现和配置管理系统，由 HashiC
 
 它具有很多优点。包括： 基于 raft 协议，比较简洁； 支持健康检查, 同时支持 HTTP 和 DNS 协议 支持跨数据中心的 WAN 集群 提供图形界面 跨平台，支持 Linux、Mac、Windows
 
-
-
 ##### 做什么
 
 ![1660217240530](README.assets/1660217240530.png)
@@ -1254,8 +1160,6 @@ Spring Cloud Consul 具有如下特性：
 ##### 怎么用
 
 https://www.springcloud.cc/spring-cloud-consul.html
-
-
 
 #### 2、安装并运行Consul
 
@@ -1345,7 +1249,6 @@ spring:
       discovery:
         #hostname: 127.0.0.1
         service-name: ${spring.application.name}
-
 ```
 
 主启动
@@ -1377,7 +1280,6 @@ public class PaymentController
         return "springcloud with consul: "+serverPort+"\t"+ UUID.randomUUID().toString();
     }
 }
-
 ```
 
 验证测试
@@ -1385,8 +1287,6 @@ public class PaymentController
 http://localhost:8006/payment/consul
 
 ![1660217820544](README.assets/1660217820544.png)
-
-
 
 （2）新建Module消费服务order80
 
@@ -1447,7 +1347,6 @@ http://localhost:8006/payment/consul
         </dependency>
     </dependencies>
 </project>
-
 ```
 
 写yml
@@ -1518,7 +1417,6 @@ public class OrderConsulController
         return result;
     }
 }
-
 ```
 
 验证测试
@@ -1545,10 +1443,6 @@ AP - 满足可用性，分区容忍性的系统，通常可能对一致性要求
 
 <img src="https://cloudimgs-1301504220.cos.ap-nanjing.myqcloud.com/image/202202272309193.png" alt="image-20220227230944151" style="zoom:67%;" />
 
-
-
-
-
 #### AP(Eureka)
 
 AP架构
@@ -1557,8 +1451,6 @@ AP架构
 
 ![1660218227773](README.assets/1660218227773.png)
 
-
-
 #### CP(Zookeeper/Consul)
 
 CP架构
@@ -1566,10 +1458,6 @@ CP架构
 ==结论：违背了可用性A的要求，只满足一致性和分区容错，即CP==
 
 ![1660218259751](README.assets/1660218259751.png)
-
-
-
-
 
 ## 微服务负载均衡组件
 
@@ -1581,12 +1469,12 @@ CP架构
 
 ```
 cloud2020
-	cloud-api-commons  服务提供与消费共同使用的相关类
-	cloud-eureka-server7001    服务注册中心7001
-	cloud-eureka-server7002	   服务注册中线7002
-	cloud-consumer-oreder80    服务消费80
-	cloud-provider-payment8001 服务提供8001
-	cloud-provider-payment8002 服务提供8002
+    cloud-api-commons  服务提供与消费共同使用的相关类
+    cloud-eureka-server7001    服务注册中心7001
+    cloud-eureka-server7002       服务注册中线7002
+    cloud-consumer-oreder80    服务消费80
+    cloud-provider-payment8001 服务提供8001
+    cloud-provider-payment8002 服务提供8002
 ```
 
 #### 1、概述
@@ -1596,8 +1484,6 @@ cloud2020
 Spring Cloud Ribbon是基于Netflix Ribbon实现的一套==客户端       负载均衡的工具==。
 
 简单的说，Ribbon是Netflix发布的开源项目，主要功能是提供==客户端的软件负载均衡算法和服务调用==。Ribbon客户端组件提供一系列完善的配置项如连接超时，重试等。简单的说，就是在配置文件中列出Load Balancer（简称LB）后面所有的机器，Ribbon会自动的帮助你基于某种规则（如简单轮询，随机连接等）去连接这些机器。我们很容易使用Ribbon实现自定义的负载均衡算法。
-
-
 
 ##### （2）官网资料
 
@@ -1611,8 +1497,6 @@ Ribbon目前也进入维护模式
 
 ![](README.assets/图片.jpeg)
 
-
-
 ##### （3）能做什么
 
 ![1660219258563](README.assets/1660219258563.png)
@@ -1621,23 +1505,17 @@ Ribbon目前也进入维护模式
 
 即在服务的消费方和提供方之间使用独立的LB设施(可以是硬件，如F5, 也可以是软件，如nginx), 由该设施负责把访问请求通过某种策略转发至服务的提供方；
 
-
-
 进程内LB
 
 将LB逻辑集成到消费方，消费方从服务注册中心获知有哪些地址可用，然后自己再从这些地址中选择出一个合适的服务器。
 
 ==Ribbon就属于进程内LB==，它只是一个类库，==集成于消费方进程==，消费方通过它来获取到服务提供方的地址。
 
-
-
 #### 2、Ribbon负载均衡演示
 
 ##### （1）架构说明
 
 ![1660228668284](README.assets/1660228668284.png)
-
-
 
 Ribbon在工作时分成两步
 
@@ -1648,8 +1526,6 @@ Ribbon在工作时分成两步
 
 总结：Ribbon其实就是一个软负载均衡的客户端组件，
 他可以和其他所需请求的客户端结合使用，和eureka结合只是其中的一个实例
-
-
 
 ##### （2）pom说明【springboot的eureka-client的starter集成了ribbon】
 
@@ -1667,15 +1543,11 @@ Ribbon在工作时分成两步
 
 ![1660228926991](README.assets/1660228926991.png)
 
-
-
 ##### （3）使用RestTemplate+Eurka+Ribbon实现负载均衡
 
 > 查看: 
->
+> 
 > Eureka项目相关 》集群Eureka构建步骤》负载均衡环境搭建测试
-
-
 
 #### 3、Ribbon核心组件IRule
 
@@ -1686,14 +1558,14 @@ Ribbon在工作时分成两步
 ![1660229958538](README.assets/1660229958538.png)
 
 ```java
-com.netflix.loadbalancer.RoundRobinRule		轮询
+com.netflix.loadbalancer.RoundRobinRule        轮询
 
-com.netflix.loadbalancer.RandomRule			随机
+com.netflix.loadbalancer.RandomRule            随机
 
-com.netflix.loadbalancer.RetryRule			
+com.netflix.loadbalancer.RetryRule            
 先按照RoundRobinRule的策略获取服务，如果获取服务失败则在指定时间内会进行重试，获取可用的服务
 
-WeightedResponseTimeRule					
+WeightedResponseTimeRule                    
 对RoundRobinRule的扩展，响应速度越快的实例选择权重越大，越容易被选择
 
 BestAvailableRule
@@ -1710,8 +1582,6 @@ ZoneAvoidanceRule
 
 ![1660230286826](README.assets/1660230286826.png)
 
-
-
 ###### （1）注意配置细节
 
 > 官方文档明确给出了警告：
@@ -1723,10 +1593,6 @@ ZoneAvoidanceRule
 ###### （2）新建package【注意位置】
 
 ![1660230452595](README.assets/1660230452595.png)
-
-
-
-
 
 ###### （3）上面包下新建MySelfRule规则类
 
@@ -1763,17 +1629,9 @@ public class OrderMain80 {
 
 http://localhost/consumer/payment/get/31
 
-
-
-
-
-
-
 #### 4、Ribbon负载均衡算法
 
 ![1660230777089](README.assets/1660230777089.png)
-
-
 
 ##### （1）原理
 
@@ -1869,7 +1727,7 @@ public class RoundRobinRule extends AbstractLoadBalancerRule {
         }
     }
 
-    
+
     private int incrementAndGetModulo(int modulo) {
         int current;
         int next;
@@ -1889,7 +1747,6 @@ public class RoundRobinRule extends AbstractLoadBalancerRule {
     public void initWithNiwsConfig(IClientConfig clientConfig) {
     }
 }
-
 ```
 
 ##### （3）手写
@@ -1901,9 +1758,9 @@ public class RoundRobinRule extends AbstractLoadBalancerRule {
 - eureka-server    7001/7002集群启动
 
 - 8001/8002微服务改造
-
+  
   controller
-
+  
   ```java
   @RestController
   @Slf4j
@@ -1955,8 +1812,8 @@ public class RoundRobinRule extends AbstractLoadBalancerRule {
   
           return this.discoveryClient;
       }
+  ```
   
-      
       //负载均衡测试
       @GetMapping(value = "/lb")
       public String getPaymentLB(){
@@ -1964,136 +1821,129 @@ public class RoundRobinRule extends AbstractLoadBalancerRule {
       }
   
   }
-  
-  ```
 
+```
 - 80订单微服务改造
 
-  (i)ApplicationContextBean去掉注解@LoadBalanced)
+(i)ApplicationContextBean去掉注解@LoadBalanced)
 
-  ```java
-  @Configuration
-  public class ApplicationContextBean
-  {
-      @Bean
-      //@LoadBalanced
-      public RestTemplate getRestTemplate()
-      {
-          return new RestTemplate();
-      }
-  }
-  ```
-
-  
+​```java
+@Configuration
+public class ApplicationContextBean
+{
+    @Bean
+    //@LoadBalanced
+    public RestTemplate getRestTemplate()
+    {
+        return new RestTemplate();
+    }
+}
+```
 
   (ii)LoadBalancer接口
 
-  ```java
-  public interface LoadBalancer
-  {
-      ServiceInstance instances(List<ServiceInstance> serviceInstances);
-  }
-  ```
+```java
+public interface LoadBalancer
+{
+    ServiceInstance instances(List<ServiceInstance> serviceInstances);
+}
+```
 
   (iii)MyLB
 
-  ```java
-  @Component
-  public class MyLB implements LoadBalancer
-  {
-      private AtomicInteger atomicInteger = new AtomicInteger(0);
-  
-      public final int getAndIncrement()
-      {
-          int current;
-          int next;
-          do
-          {
-              current = this.atomicInteger.get();
-              next = current >= 2147483647 ? 0 : current + 1;
-          } while(!this.atomicInteger.compareAndSet(current, next));
-          System.out.println("*****next: "+next);
-          return next;
-      }
-  
-  
-      @Override
-      public ServiceInstance instances(List<ServiceInstance> serviceInstances)
-      {
-          int index = getAndIncrement() % serviceInstances.size();
-          return serviceInstances.get(index);
-      }
-  }
-  ```
+```java
+@Component
+public class MyLB implements LoadBalancer
+{
+    private AtomicInteger atomicInteger = new AtomicInteger(0);
+
+    public final int getAndIncrement()
+    {
+        int current;
+        int next;
+        do
+        {
+            current = this.atomicInteger.get();
+            next = current >= 2147483647 ? 0 : current + 1;
+        } while(!this.atomicInteger.compareAndSet(current, next));
+        System.out.println("*****next: "+next);
+        return next;
+    }
+
+
+    @Override
+    public ServiceInstance instances(List<ServiceInstance> serviceInstances)
+    {
+        int index = getAndIncrement() % serviceInstances.size();
+        return serviceInstances.get(index);
+    }
+}
+```
 
   (iv)OrderController
 
-  ```java
-  @RestController
-  public class OrderController
-  {
-      //public static final String PAYMENT_SRV = "http://localhost:8001";
-      public static final String PAYMENT_SRV = "http://CLOUD-PAYMENT-SERVICE";
-  
-      @Resource
-      private RestTemplate restTemplate;
-      //可以获取注册中心上的服务列表
-      @Resource
-      private DiscoveryClient discoveryClient;
-      @Resource
-      private LoadBalancer loadBalancer;
-  
-      @GetMapping("/consumer/payment/create")
-      public CommonResult<Payment> create(Payment payment)
-      {
-          return restTemplate.postForObject(PAYMENT_SRV+"/payment/create",payment,CommonResult.class);
-      }
-  
-      @GetMapping("/consumer/payment/get/{id}")
-      public CommonResult<Payment> getPayment(@PathVariable("id") Long id)
-      {
-          return restTemplate.getForObject(PAYMENT_SRV+"/payment/get/"+id,CommonResult.class);
-      }
-  
-      @GetMapping("/consumer/payment/getForEntity/{id}")
-      public CommonResult<Payment> getPayment2(@PathVariable("id") Long id)
-      {
-          ResponseEntity<CommonResult> entity = restTemplate.getForEntity(PAYMENT_SRV+"/payment/get/"+id, CommonResult.class);
-          if(entity.getStatusCode().is2xxSuccessful()){
-              return entity.getBody();
-          }else {
-              return new CommonResult(444, "操作失败");
-          }
-      }
-   
-   
-   	//自定义负载均衡算法
-      @Resource
-      private LoadBalancer loadBalancer;
-  
-      @GetMapping("/consumer/payment/lb")
-      public String getPaymentLB()
-      {
-          List<ServiceInstance> instances = discoveryClient.getInstances("CLOUD-PAYMENT-SERVICE");
-  
-          if(instances == null || instances.size()<=0) {
-              return null;
-          }
-          ServiceInstance serviceInstance = loadBalancer.instances(instances);
-          URI uri = serviceInstance.getUri();
-  
-          return restTemplate.getForObject(uri+"/payment/lb",String.class);
-      }
-  }
-  ```
+```java
+@RestController
+public class OrderController
+{
+    //public static final String PAYMENT_SRV = "http://localhost:8001";
+    public static final String PAYMENT_SRV = "http://CLOUD-PAYMENT-SERVICE";
+
+    @Resource
+    private RestTemplate restTemplate;
+    //可以获取注册中心上的服务列表
+    @Resource
+    private DiscoveryClient discoveryClient;
+    @Resource
+    private LoadBalancer loadBalancer;
+
+    @GetMapping("/consumer/payment/create")
+    public CommonResult<Payment> create(Payment payment)
+    {
+        return restTemplate.postForObject(PAYMENT_SRV+"/payment/create",payment,CommonResult.class);
+    }
+
+    @GetMapping("/consumer/payment/get/{id}")
+    public CommonResult<Payment> getPayment(@PathVariable("id") Long id)
+    {
+        return restTemplate.getForObject(PAYMENT_SRV+"/payment/get/"+id,CommonResult.class);
+    }
+
+    @GetMapping("/consumer/payment/getForEntity/{id}")
+    public CommonResult<Payment> getPayment2(@PathVariable("id") Long id)
+    {
+        ResponseEntity<CommonResult> entity = restTemplate.getForEntity(PAYMENT_SRV+"/payment/get/"+id, CommonResult.class);
+        if(entity.getStatusCode().is2xxSuccessful()){
+            return entity.getBody();
+        }else {
+            return new CommonResult(444, "操作失败");
+        }
+    }
+
+
+     //自定义负载均衡算法
+    @Resource
+    private LoadBalancer loadBalancer;
+
+    @GetMapping("/consumer/payment/lb")
+    public String getPaymentLB()
+    {
+        List<ServiceInstance> instances = discoveryClient.getInstances("CLOUD-PAYMENT-SERVICE");
+
+        if(instances == null || instances.size()<=0) {
+            return null;
+        }
+        ServiceInstance serviceInstance = loadBalancer.instances(instances);
+        URI uri = serviceInstance.getUri();
+
+        return restTemplate.getForObject(uri+"/payment/lb",String.class);
+    }
+}
+```
 
   (v)测试
 
   http://localhost/consumer/payment/lb
-
-
-
-
 
 ## 微服务调用
 
@@ -2129,50 +1979,184 @@ public class ApplicationContextConfig {
         return new RestTemplate();
     }
 }
-
 ```
 
 相关项目结构
 
 <img src="https://cloudimgs-1301504220.cos.ap-nanjing.myqcloud.com/image/202203081626925.png" alt="image-20220308162636836" style="zoom:67%;" />
 
-
-
 ### openFeign
 
-底层封装ribbon,使用ribbon来进行负载均衡
+> 底层封装ribbon,使用ribbon来进行负载均衡
 
-主启动类
+![1660274713426](README.assets/1660274713426.png)
+
+#### 基本项目架构
+
+<img src="https://cloudimgs-1301504220.cos.ap-nanjing.myqcloud.com/image/202203081627823.png" alt="image-20220308162730725" style="zoom:67%;" />
+
+```txt
+cloud2020
+	cloud-api-commons  服务提供与消费共同使用的相关类
+    cloud-eureka-server7001    服务注册中心7001
+    cloud-eureka-server7002       服务注册中线7002
+    cloud-consumer-feign-order80    服务消费80
+    cloud-provider-payment8001 服务提供8001
+    cloud-provider-payment8002 服务提供8002
+```
+
+#### 1、概述
+
+![1660274839994](README.assets/1660274839994.png)
+
+（1）OpenFeign是什么
+
+> Feign是一个声明式的Web服务客户端，让编写Web服务客户端变得非常容易，==只需创建一个接口并在接口上添加注解即可==
+
+GitHub: https://github.com/spring-cloud/spring-cloud-openfeign
+
+<mark>官网</mark>解释：
+https://cloud.spring.io/spring-cloud-static/Hoxton.SR1/reference/htmlsingle/#spring-cloud-openfeign
+
+Feign是一个声明式WebService客户端。使用Feign能让编写Web Service客户端更加简单。
+它的使用方法是==定义一个服务接口然后在上面添加注解==。Feign也支持可拔插式的编码器和解码器。Spring Cloud对Feign进行了封装，使其支持了Spring MVC标准注解和HttpMessageConverters。Feign可以与Eureka和Ribbon组合使用以支持负载均衡
+
+![1660274982128](README.assets/1660274982128.png)
+
+（2）能干嘛
+
+<mark>Feign能干什么</mark>
+Feign旨在使编写Java Http客户端变得更容易。
+前面在使用Ribbon+RestTemplate时，利用RestTemplate对http请求的封装处理，形成了一套模版化的调用方法。但是在实际开发中，由于对服务依赖的调用可能不止一处，<mark>往往一个接口会被多处调用</mark>，所以通常都会针对每个微服务自行封装一些客户端类来包装这些依赖服务的调用。所以，Feign在此基础上做了进一步封装，由他来帮助我们定义和实现依赖服务接口的定义。在Feign的实现下，<mark>我们只需创建一个接口并使用注解的方式来配置它(以前是Dao接口上面标注Mapper注解,现在是一个微服务接口上面标注一个Feign注解即可)</mark>，即可完成对服务提供方的接口绑定，简化了使用Spring cloud Ribbon时，自动封装服务调用客户端的开发量。
+
+<mark>Feign集成了Ribbon</mark>
+利用Ribbon维护了Payment的服务列表信息，并且通过轮询实现了客户端的负载均衡。而与Ribbon不同的是，<mark>通过feign只需要定义服务绑定接口且以声明式的方法</mark>，优雅而简单的实现了服务调用
+
+（3）Feign和OpenFeign的区别
+
+| Feign                                                        | OpenFeign                                                    |
+| :----------------------------------------------------------- | :----------------------------------------------------------- |
+| Feign是Spring Cloud组件中的一个轻量级RESTful的HTTP服务客户端
+<br/>Feign内置了Ribbon，用来做客户端负载均衡，去调用服务注册中心的服务。Feign的使用方式是：使用Feign的注解定义接口，调用这个接口，就可以调用服务注册中心的服务 | OpenFeign是Spring Cloud 在Feign的基础上支持了SpringMVC的注解，如@RequesMapping等等。OpenFeign的@FeignClient可以解析SpringMVC的@RequestMapping注解下的接口，并通过动态代理的方式产生实现类，实现类中做负载均衡并调用其他服务。 |
+| <dependency>
+<groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-feign</artifactId>
+</dependency> | <dependency>        <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-starter-openfeign</artifactId>
+</dependency> |
+
+
+
+#### 2、OpenFeign使用步骤
+
+![1660276272832](README.assets/1660276272832.png)
+
+##### 项目搭建
+
+新建cloud-consumer-feign-order80
+
+> Feign在消费端使用
+
+![1660276360859](README.assets/1660276360859.png)
+
+##### (1)改pom
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>cloud2020</artifactId>
+        <groupId>com.adun.springcloud</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>cloud-consumer-feign-order80</artifactId>
+    <dependencies>
+        <!--openfeign-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
+        </dependency>
+        <!--eureka client-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+        </dependency>
+        <!-- 引入自己定义的api通用包，可以使用Payment支付Entity -->
+        <dependency>
+            <groupId>com.adun.springcloud</groupId>
+            <artifactId>cloud-api-commons</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <!--web-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <!--一般基础通用配置-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <scope>runtime</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
+```
+
+##### (2)写yml
+
+```yaml
+server:
+  port: 80
+
+eureka:
+  client:
+    register-with-eureka: false
+    service-url:
+      #服务注册进eureka-server集群
+      defaultZone: http://eureka7001.com:7001/eureka/,http://eureka7002.com:7002/eureka/
+```
+
+##### (3)主启动
 
 ```java
-package com.adun.springcloud;
-
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.openfeign.EnableFeignClients;
-
 @SpringBootApplication
 //激活feign
 @EnableFeignClients
-public class OrderFeignMain80 {
-    public static void main(String[] args) {
-        SpringApplication.run(OrderFeignMain80.class, args);
+public class OrderFeignMain80
+{
+    public static void main(String[] args)
+    {
+        SpringApplication.run(OrderFeignMain80.class,args);
     }
 }
-
 ```
 
-能力接口
+##### (4)业务类
+
+![1660276624515](README.assets/1660276624515.png)
+
+PaymentFeignService
 
 ```java
-package com.adun.springcloud.service;
-
-import com.adun.springcloud.entities.CommonResult;
-import com.adun.springcloud.entities.Payment;
-import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 @Component
 @FeignClient(value = "CLOUD-PAYMENT-SERVICE")
 public interface PaymentFeignService {
@@ -2184,12 +2168,285 @@ public interface PaymentFeignService {
     public String paymentFeignTimeOut();
 
 }
+```
+
+controller
+
+```java
+@RestController
+public class OrderFeignController
+{
+    @Resource
+    private PaymentFeignService paymentFeignService;
+
+    @GetMapping(value = "/consumer/payment/get/{id}")
+    public CommonResult<Payment> getPaymentById(@PathVariable("id") Long id)
+    {
+        return paymentFeignService.getPaymentById(id);
+    }
+}
+```
+
+##### (5)测试
+
+![1660276746110](README.assets/1660276746110.png)
+
+#### 3、OpenFeign超时控制
+
+![1660277035123](README.assets/1660277035123.png)
+
+##### 项目结构
+
+```txt
+cloud2020
+	cloud-api-commons  服务提供与消费共同使用的相关类
+    cloud-eureka-server7001    服务注册中心7001
+    cloud-eureka-server7002       服务注册中线7002
+    cloud-consumer-feign-order80    服务消费80
+    cloud-provider-payment8001 服务提供8001
+```
+
+
+
+##### 是什么
+
+>  OpenFeign默认等待1秒钟，超过后报错 
+
+```txt
+ 默认Feign客户端只等待一秒钟，但是服务端处理需要超过1秒钟，导致Feign客户端不想等待了，直接返回报错。
+为了避免这样的情况，有时候我们需要设置Feign客户端的超时控制。
+
+yml文件中开启配置
+```
+
+OpenFeign默认支持Ribbon
+
+![1660277569410](README.assets/1660277569410.png)
+
+YML文件里需要开启OpenFeign客户端超时控制
+
+```yaml
+server:
+  port: 80
+
+eureka:
+  client:
+    register-with-eureka: false
+    service-url:
+      defaultZone: http://eureka7001.com:7001/eureka/,http://eureka7002.com:7002/eureka/
+
+#设置feign客户端超时时间(OpenFeign默认支持ribbon)
+ribbon:
+#指的是建立连接所用的时间，适用于网络状况正常的情况下,两端连接所用的时间
+  ReadTimeout: 5000
+#指的是建立连接后从服务器读取到可用资源所用的时间
+  ConnectTimeout: 5000
+```
+
+
+
+##### bug复现修改
+
+##### （1）服务提供方8001故意写暂停程序
+
+```java
+@RestController
+@Slf4j
+public class PaymentController
+{
+    @Value("${server.port}")
+    private String serverPort;
+
+    @Resource
+    private PaymentService paymentService;
+
+    @Resource
+    private DiscoveryClient discoveryClient;
+
+    @PostMapping(value = "/payment/create")
+    public CommonResult create(@RequestBody Payment payment)
+    {
+        int result = paymentService.create(payment);
+        log.info("*****插入操作返回结果:" + result);
+
+        if(result > 0)
+        {
+            return new CommonResult(200,"插入成功,返回结果"+result+"\t 服务端口："+serverPort,payment);
+        }else{
+            return new CommonResult(444,"插入失败",null);
+        }
+    }
+
+    @GetMapping(value = "/payment/get/{id}")
+    public CommonResult<Payment> getPaymentById(@PathVariable("id") Long id)
+    {
+        Payment payment = paymentService.getPaymentById(id);
+        log.info("*****查询结果:{}",payment);
+        if (payment != null) {
+            return new CommonResult(200,"查询成功"+"\t 服务端口："+serverPort,payment);
+        }else{
+            return new CommonResult(444,"没有对应记录,查询ID: "+id,null);
+        }
+    }
+
+    @GetMapping(value = "/payment/discovery")
+    public Object discovery()
+    {
+        List<String> services = discoveryClient.getServices();
+        for (String element : services) {
+            System.out.println(element);
+        }
+
+        List<ServiceInstance> instances = discoveryClient.getInstances("CLOUD-PAYMENT-SERVICE");
+        for (ServiceInstance element : instances) {
+            System.out.println(element.getServiceId() + "\t" + element.getHost() + "\t" + element.getPort() + "\t"
+                    + element.getUri());
+        }
+        return this.discoveryClient;
+    }
+
+    @GetMapping(value = "/payment/lb")
+    public String getPaymentLB()
+    {
+        System.out.println("*****lb from port: "+serverPort);
+        return serverPort;
+    }
+
+    //Feign超时演示
+    @GetMapping(value = "/payment/feign/timeout")
+    public String paymentFeignTimeOut()
+    {
+        System.out.println("*****paymentFeignTimeOut from port: "+serverPort);
+        //暂停几秒钟线程
+        try { TimeUnit.SECONDS.sleep(3); } catch (InterruptedException e) { e.printStackTrace(); }
+        return serverPort;
+    }
+
+}
+```
+
+##### （2）服务消费方80添加超时方法PaymentFeignService
+
+```java
+@Component
+@FeignClient(value = "CLOUD-PAYMENT-SERVICE")
+public interface PaymentFeignService
+{
+    @GetMapping(value = "/payment/get/{id}")
+    CommonResult<Payment> getPaymentById(@PathVariable("id") Long id);
+	
+    //Feign超时演示
+    @GetMapping(value = "/payment/feign/timeout")
+    String paymentFeignTimeOut();
+}
+```
+
+##### （3）服务消费方80添加超时方法OrderFeignController
+
+```java
+@RestController
+public class OrderFeignController
+{
+    @Resource
+    private PaymentFeignService paymentFeignService;
+
+    @GetMapping(value = "/consumer/payment/get/{id}")
+    public CommonResult<Payment> getPaymentById(@PathVariable("id") Long id)
+    {
+        return paymentFeignService.getPaymentById(id);
+    }
+
+    //Feign超时演示
+    @GetMapping(value = "/consumer/payment/feign/timeout")
+    public String paymentFeignTimeOut()
+    {
+        return paymentFeignService.paymentFeignTimeOut();
+    }
+}
+```
+
+##### （4）测试
+
+![1660277349675](README.assets/1660277349675.png)
+
+![1660277361703](README.assets/1660277361703.png)
+
+
+
+
+
+#### 4、OpenFeign日志打印功能
+
+![1660277713102](README.assets/1660277713102.png)
+
+##### （1）是什么
+
+Feign 提供了日志打印功能，我们可以通过配置来调整日志级别，从而了解 Feign 中 Http 请求的细节。
+说白了就是==对Feign接口的调用情况进行监控和输出==
+
+
+
+##### （2）日志级别
+
+```shell
+NONE：默认的，不显示任何日志；
+ 
+BASIC：仅记录请求方法、URL、响应状态码及执行时间；
+ 
+HEADERS：除了 BASIC 中定义的信息之外，还有请求和响应的头信息；
+ 
+FULL：除了 HEADERS 中定义的信息之外，还有请求和响应的正文及元数据。
+```
+
+
+
+##### （3）配置日志Bean
+
+```java
+@Configuration
+public class FeignConfig
+{
+    @Bean
+    Logger.Level feignLoggerLevel()
+    {
+        return Logger.Level.FULL;
+    }
+}
+```
+
+
+
+##### （4）YML文件里需要开启日志的Feign客户端
+
+```yaml
+server:
+  port: 80
+
+eureka:
+  client:
+    register-with-eureka: false
+    service-url:
+      defaultZone: http://eureka7001.com:7001/eureka/,http://eureka7002.com:7002/eureka/
+
+#设置feign客户端超时时间
+#springCloud默认开启支持ribbon
+ribbon:
+#指的是建立连接所用的时间，适用于网络状况正常的情况下,两端连接所用的时间
+  ReadTimeout: 5000
+#指的是建立连接后从服务器读取到可用资源所用的时间
+  ConnectTimeout: 5000
+
+logging:
+  level:
+    # feign日志以什么级别监控哪个接口
+    com.atguigu.springcloud.service.PaymentFeignService: debug
+ 
 
 ```
 
-相关项目结构
+##### （5）后台日志查看
 
-<img src="https://cloudimgs-1301504220.cos.ap-nanjing.myqcloud.com/image/202203081627823.png" alt="image-20220308162730725" style="zoom:67%;" />
+![1660277876931](README.assets/1660277876931.png)
 
 ## 服务熔断降级与限流
 
@@ -2199,16 +2456,11 @@ public interface PaymentFeignService {
 2. 消费者配置降级【降级推荐配置到客户】
 3. 监控面板需要配合actuator进行使用
 
-
-
 相关项目结构
 
 <img src="https://cloudimgs-1301504220.cos.ap-nanjing.myqcloud.com/image/202203081641968.png" alt="image-20220308164134879" style="zoom:67%;" />
 
-
 ## 服务配置中心
-
-
 
 <img src="https://cloudimgs-1301504220.cos.ap-nanjing.myqcloud.com/image/202203131700645.png" alt="image-20220313170052544" style="zoom:67%;" />
 
@@ -2245,7 +2497,6 @@ spring:
             - springcloud-config
       ####读取分支
       label: master
-
 ```
 
 ##### 主启动类
@@ -2253,8 +2504,6 @@ spring:
 ```java
 @EnableConfigServer
 ```
-
-
 
 #### 微服务客户实例
 
@@ -2308,8 +2557,6 @@ management:
 @RefreshScope
 ```
 
-
-
 ### Spring Cloud Bus【底层使用消息中间件进行通知】
 
 > Spring Cloud Bus能管理和传播分布式系统间的消息，就像一个分布式执行器，可用于广播状态更改、事件推送等，也可以当作微服务间的通信通道。
@@ -2322,8 +2569,6 @@ Spring Cloud Bus 配合 Spring Cloud Config 使用可以实现配置的动态刷
 
 > `spring-cloud-starter-bus-amqp` or `spring-cloud-starter-bus-kafka`
 
-
-
 #### 什么是总线
 
 在微服务架构的系统中，==通常会使用轻量级的消息代理来构建一个共用的消息主题==，并让系统中所有微服务实例都连接上来。==由于该主题中产生的消息会被所有实例监听和消费，所以称它为消息总线。==在总线上的各个实例，都可以方便地广播一些需要让其他连接在该主题上的实例都知道的消息。
@@ -2332,13 +2577,9 @@ Spring Cloud Bus 配合 Spring Cloud Config 使用可以实现配置的动态刷
 
 ConfigClient实例都监听MQ中同一个topic(默认是springCloudBus)。当一个服务刷新数据的时候，它会把这个信息放入到Topic中，这样其它监听同一Topic的服务就能得到通知，然后去更新自身的配置。
 
-
-
 #### 基本架构
 
 ![image-20220313164848797](https://cloudimgs-1301504220.cos.ap-nanjing.myqcloud.com/image/202203131648869.png)
-
-
 
 #### 配置中心服务端
 
@@ -2366,7 +2607,7 @@ rabbitmq:
     port: 5672
     username: guest
     password: guest
-    
+
 ##rabbitmq相关配置,暴露bus刷新配置的端点
 management:
   endpoints: #暴露bus刷新配置的端点
@@ -2381,8 +2622,6 @@ management:
 //激活分布式配置服务中心
 @EnableConfigServer
 ```
-
-
 
 #### 配置中心客户端
 
@@ -2416,7 +2655,6 @@ management:
     web:
       exposure:
         include: "*"   # 'refresh'
-
 ```
 
 ##### 需要动态刷新的类，添加注解
@@ -2426,12 +2664,8 @@ management:
 @RefreshScope
 ```
 
-
-
 ## Spring Cloud Stream
 
 > 引入目的：屏蔽底层消息中间件的差异,降低切换成本，统一消息的编程模型
-
-
 
 ## Spring Cloud Sleuth
