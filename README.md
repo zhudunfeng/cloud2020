@@ -5496,7 +5496,14 @@ Controller
 
 ![1660470736300](README.assets/1660470736300.png)
 
-步骤
+###### 基本项目结构
+
+```txt
+cloud2020
+	cloudalibaba-sentinel-service8401
+```
+
+###### (1)步骤
 
 ![1660470777799](README.assets/1660470777799.png)
 
