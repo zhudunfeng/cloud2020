@@ -4199,6 +4199,1425 @@ public String paymentZipkin()
 
 ## SpringCloudAlibaba
 
+![1660533422117](README.assets/1660533422117.png)
+
+（1）why会出现SpringCloud alibaba
+
+i. Spring Cloud Netflix项目进入维护模式
+
+> https://spring.io/blog/2018/12/12/spring-cloud-greenwich-rc1-available-now
+
+![1660533578528](README.assets/1660533578528.png)
+
+> <mark>Spring Cloud Netflix Projects Entering Maintenance Mode</mark>
+
+什么是维护模式
+
+![1660533632443](README.assets/1660533632443.png)
+
+> 将模块置于维护模式，意味着 Spring Cloud 团队将不会再向模块添加新功能。
+> 我们将修复 block 级别的 bug 以及安全问题，我们也会考虑并审查社区的小型 pull request。
+
+
+
+进入维护模式意味着什么呢？
+
+> 进入维护模式意味着
+>
+> Spring Cloud Netflix 将不再开发新的组件
+> 我们都知道Spring Cloud 版本迭代算是比较快的，因而出现了很多重大ISSUE都还来不及Fix就又推另一个Release了。进入维护模式意思就是目前一直以后一段时间Spring Cloud Netflix提供的服务和功能就这么多了，不在开发新的组件和功能了。以后将以维护和Merge分支Full Request为主
+>
+> 新组件功能将以其他替代平代替的方式实现
+>
+> ![1660533702931](README.assets/1660533702931.png)
+
+
+
+（2）SpringCloud alibaba带来了什么
+
+![1660533758235](README.assets/1660533758235.png)
+
+i. 是什么
+
+>  官网：
+> https://github.com/alibaba/spring-cloud-alibaba/blob/master/README-zh.md
+>
+> 诞生：
+> 2018.10.31，Spring Cloud Alibaba 正式入驻了 Spring Cloud 官方孵化器，并在 Maven 中央库发布了第一个版本。
+>
+> ![1660533838363](README.assets/1660533838363.png)
+
+ii.能干嘛
+
+> 服务限流降级：默认支持 Servlet、Feign、RestTemplate、Dubbo 和 RocketMQ 限流降级功能的接入，可以在运行时通过控制台实时修改限流降级规则，还支持查看限流降级 Metrics 监控。
+> 服务注册与发现：适配 Spring Cloud 服务注册与发现标准，默认集成了 Ribbon 的支持。
+> 分布式配置管理：支持分布式系统中的外部化配置，配置更改时自动刷新。
+> 消息驱动能力：基于 Spring Cloud Stream 为微服务应用构建消息驱动能力。
+> 阿里云对象存储：阿里云提供的海量、安全、低成本、高可靠的云存储服务。支持在任何应用、任何时间、任何地点存储和访问任意类型的数据。
+> 分布式任务调度：提供秒级、精准、高可靠、高可用的定时（基于 Cron 表达式）任务调度服务。同时提供分布式的任务执行模型，如网格任务。网格任务支持海量子任务均匀分配到所有 Worker（schedulerx-client）上执行。
+
+iii.去哪下
+
+> https://github.com/alibaba/spring-cloud-alibaba/blob/master/README-zh.md
+
+iv.怎么玩
+
+> ![1660534561876](README.assets/1660534561876.png)
+
+（3）SpringCloud alibaba学习资料获取
+
+i. 官网
+
+> https://spring.io/projects/spring-cloud-alibaba#overview
+
+ii. 中文
+
+> https://github.com/alibaba/spring-cloud-alibaba
+>
+> https://spring-cloud-alibaba-group.github.io/github-pages/greenwich/spring-cloud-alibaba.html
+
+iii.英文
+
+> https://github.com/alibaba/spring-cloud-alibaba/blob/master/README-zh.md
+
+
+
+
+
+
+
+### SpringCloud Alibaba Nacos服务注册和配置中心
+
+![1660536617879](README.assets/1660536617879.png)
+
+#### 基本项目架构
+
+```txt
+cloud2020
+	cloudalibaba-provider-payment9001
+	cloudalibaba-consumer-nacos-order83
+```
+
+
+
+#### 1、Nacos简介
+
+![1660536763072](README.assets/1660536763072.png)
+
+
+
+##### (1)去哪下
+
+>https://github.com/alibaba/Nacos
+>
+>官网文档
+>
+>https://nacos.io/zh-cn/index.html
+>
+>https://spring-cloud-alibaba-group.github.io/github-pages/greenwich/spring-cloud-alibaba.html#_spring_cloud_alibaba_nacos_discovery
+
+##### (2)各种注册中心比较
+
+> 据说 Nacos 在阿里巴巴内部有超过 10 万的实例运行，已经过了类似双十一等各种大型流量的考验
+>
+> ![1660536923543](README.assets/1660536923543.png)
+
+
+
+
+
+#### 2、安装并运行Nacos
+
+![1660538057175](README.assets/1660538057175.png)
+
+##### (1)官网下载Nacos
+
+> https://github.com/alibaba/nacos/releases
+>
+> ![1660538258342](README.assets/1660538258342.png)
+>
+> ![1660538293594](README.assets/1660538293594.png)
+
+
+
+##### (2)解压安装包，直接运行bin目录下的startup.cmd
+
+![1660538376289](README.assets/1660538376289.png)
+
+##### (3)命令运行成功后直接访问http://localhost:8848/nacos
+
+>  默认账号密码都是nacos
+
+结果页面
+
+![1660538954358](README.assets/1660538954358.png)
+
+
+
+#### 3、Nacos作为服务注册中心演示
+
+![1660539103894](README.assets/1660539103894.png)
+
+
+
+##### (1)官网文档
+
+> https://spring-cloud-alibaba-group.github.io/github-pages/greenwich/spring-cloud-alibaba.html#_spring_cloud_alibaba_nacos_config
+
+
+
+##### (2)基于Nacos的服务提供者
+
+![1660544159558](README.assets/1660544159558.png)
+
+cloudalibaba-provider-payment9001
+
+###### i.改pom
+
+父pom
+
+```xml
+<dependency>
+     <groupId>com.alibaba.cloud</groupId>
+     <artifactId>spring-cloud-alibaba-dependencies</artifactId>
+     <version>2.1.0.RELEASE</version>
+     <type>pom</type>
+     <scope>import</scope>
+</dependency>
+
+```
+
+本模块POM
+
+```xml
+ <!--SpringCloud ailibaba nacos -->
+<dependency>
+    <groupId>com.alibaba.cloud</groupId>
+    <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+</dependency>
+
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>cloud2020</artifactId>
+        <groupId>com.adun.springcloud</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>cloudalibaba-provider-payment9001</artifactId>
+
+    <dependencies>
+        <!--SpringCloud ailibaba nacos 服务发现与注册-->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+        </dependency>
+        <!-- SpringBoot整合Web组件 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <!--日常通用jar包配置-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <scope>runtime</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
+```
+
+
+
+###### ii.写yml
+
+```yml
+server:
+  port: 9001
+
+spring:
+  application:
+    name: nacos-payment-provider
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848 #配置Nacos地址
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+```
+
+###### iii.主启动
+
+```java
+@EnableDiscoveryClient
+@SpringBootApplication
+public class PaymentMain9001
+{
+    public static void main(String[] args) {
+            SpringApplication.run(PaymentMain9001.class, args);
+    }
+}
+```
+
+###### iv.业务类
+
+```java
+@RestController
+public class PaymentController
+{
+    @Value("${server.port}")
+    private String serverPort;
+
+    @GetMapping(value = "/payment/nacos/{id}")
+    public String getPayment(@PathVariable("id") Integer id)
+    {
+        return "nacos registry, serverPort: "+ serverPort+"\t id"+id;
+    }
+}
+```
+
+###### v.测试
+
+![1660544424573](README.assets/1660544424573.png)
+
+nacos控制台
+
+![1660544439387](README.assets/1660544439387.png)
+
+
+
+![1660544470014](README.assets/1660544470014.png)
+
+
+
+![1660544487788](README.assets/1660544487788.png)
+
+
+
+##### (3)基于Nacos的服务消费者
+
+![1660544563928](README.assets/1660544563928.png)
+
+cloudalibaba-consumer-nacos-order83
+
+###### i.改pom
+
+```xml
+<!--SpringCloud ailibaba nacos -->
+<dependency>
+    <groupId>com.alibaba.cloud</groupId>
+    <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+</dependency>
+
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>cloud2020</artifactId>
+        <groupId>com.adun.springcloud</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>cloudalibaba-consumer-nacos-order83</artifactId>
+
+    <dependencies>
+        <!--SpringCloud ailibaba nacos -->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+        </dependency>
+        <!-- 引入自己定义的api通用包，可以使用Payment支付Entity -->
+        <dependency>
+            <groupId>com.adun.springcloud</groupId>
+            <artifactId>cloud-api-commons</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <!-- SpringBoot整合Web组件 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <!--日常通用jar包配置-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <scope>runtime</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
+
+```
+
+###### ii.写yml
+
+```yaml
+server:
+  port: 83
+
+
+spring:
+  application:
+    name: nacos-order-consumer
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848
+
+
+#消费者将要去访问的微服务名称(注册成功进nacos的微服务提供者)
+service-url:
+  nacos-user-service: http://nacos-payment-provider 
+
+```
+
+
+
+###### iii.主启动
+
+```java
+@EnableDiscoveryClient
+@SpringBootApplication
+public class OrderNacosMain83
+{
+    public static void main(String[] args)
+    {
+        SpringApplication.run(OrderNacosMain83.class,args);
+    }
+} 
+```
+
+
+
+###### iv.业务类
+
+ApplicationContextBean
+
+```java
+@Configuration
+public class ApplicationContextBean
+{
+    @Bean
+    @LoadBalanced
+    public RestTemplate getRestTemplate()
+    {
+        return new RestTemplate();
+    }
+}
+```
+
+OrderNacosController
+
+```java
+@RestController
+public class OrderNacosController
+{
+    @Resource
+    private RestTemplate restTemplate;
+
+    @Value("${service-url.nacos-user-service}")
+    private String serverURL;
+
+    @GetMapping("/consumer/payment/nacos/{id}")
+    public String paymentInfo(@PathVariable("id") Long id)
+    {
+        return restTemplate.getForObject(serverURL+"/payment/nacos/"+id,String.class);
+    }
+
+}
+```
+
+
+
+###### v.测试
+
+![1660545168597](README.assets/1660545168597.png)
+
+nacos控制台
+
+![1660545184272](README.assets/1660545184272.png)
+
+
+
+##### (4)服务注册中心对比
+
+###### i.Nacos全景图所示
+
+![1660545303068](README.assets/1660545303068.png)
+
+
+
+###### ii.Nacos和CAP
+
+![1660545376311](README.assets/1660545376311.png)
+
+![1660545395865](README.assets/1660545395865.png)
+
+###### iii.Nacos 支持AP和CP模式的切换
+
+> <mark>C是所有节点在同一时间看到的数据是一致的；而A的定义是所有的请求都会收到响应。</mark>
+>
+> <mark>何时选择使用何种模式？</mark>
+> 一般来说，
+> 如果不需要存储服务级别的信息且服务实例是通过nacos-client注册，并能够保持心跳上报，那么就可以选择AP模式。当前主流的服务如 Spring cloud 和 Dubbo 服务，都适用于AP模式，AP模式为了服务的可能性而减弱了一致性，因此AP模式下只支持注册临时实例。
+>
+> 如果需要在服务级别编辑或者存储配置信息，那么 CP 是必须，K8S服务和DNS服务则适用于CP模式。
+> CP模式下则支持注册持久化实例，此时则是以 Raft 协议为集群运行模式，该模式下注册实例之前必须先注册服务，如果服务不存在，则会返回错误。
+>
+>
+> curl -X PUT '$NACOS_SERVER:8848/nacos/v1/ns/operator/switches?entry=serverMode&value=CP'
+>
+
+#### 4、Nacos作为服务配置中心演示
+
+![1660551753688](README.assets/1660551753688.png)
+
+##### (1)Nacos作为配置中心-基础配置
+
+cloudalibaba-config-nacos-client3377
+
+###### i.改pom
+
+```xml
+ <!--nacos-config-->
+<dependency>
+    <groupId>com.alibaba.cloud</groupId>
+    <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+</dependency>
+
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>cloud2020</artifactId>
+        <groupId>com.adun.springcloud</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>cloudalibaba-config-nacos-client3377</artifactId>
+
+    <dependencies>
+        <!--nacos-config-->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+        </dependency>
+        <!--nacos-discovery-->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+        </dependency>
+        <!--web + actuator-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <!--一般基础配置-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <scope>runtime</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
+```
+
+
+
+###### ii.写yml
+
+![1660552114496](README.assets/1660552114496.png)
+
+为什么配置两个
+
+> Nacos同springcloud-config一样，在项目初始化时，要保证先从配置中心进行配置拉取，
+> 拉取配置之后，才能保证项目的正常启动。
+>
+> springboot中配置文件的加载是存在优先级顺序的，<mark>bootstrap优先级高于application</mark>
+
+bootstrap.yml
+
+```yml
+# nacos配置
+server:
+  port: 3377
+
+spring:
+  application:
+    name: nacos-config-client
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848 #Nacos服务注册中心地址
+      config:
+        server-addr: localhost:8848 #Nacos作为配置中心地址
+        file-extension: yaml #指定yaml格式的配置
+ 
+ 
+#${spring.application.name}-${spring.profile.active}.${spring.cloud.nacos.config.file-extension}
+```
+
+application.yml
+
+```yaml
+spring:
+  profiles:
+    active: dev # 表示开发环境
+```
+
+
+
+###### iii.主启动
+
+```java
+@EnableDiscoveryClient
+@SpringBootApplication
+public class NacosConfigClientMain3377
+{
+    public static void main(String[] args) {
+            SpringApplication.run(NacosConfigClientMain3377.class, args);
+    }
+}
+```
+
+###### iv.业务类
+
+![1660552315070](README.assets/1660552315070.png)
+
+ConfigClientController
+
+```java
+@RestController
+@RefreshScope //在控制器类加入@RefreshScope注解使当前类下的配置支持Nacos的动态刷新功能。
+public class ConfigClientController
+{
+    @Value("${config.info}")
+    private String configInfo;
+
+    @GetMapping("/config/info")
+    public String getConfigInfo() {
+        return configInfo;
+    }
+}
+```
+
+@RefreshScope
+
+![1660552405210](README.assets/1660552405210.png)
+
+
+
+###### v.在Nacos中添加配置信息
+
+![1660552473123](README.assets/1660552473123.png)
+
+Nacos中的匹配规则
+
+理论
+
+> 
+>
+> Nacos中的dataid的组成格式及与SpringBoot配置文件中的匹配规则
+>
+> 官网
+>
+> https://nacos.io/zh-cn/docs/quick-start-spring-cloud.html
+>
+> ![1660552531178](README.assets/1660552531178.png)
+>
+> ```json
+>  最后公式：
+> ${spring.application.name}-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
+> 
+> ```
+
+
+
+实操
+
+配置新增
+
+> ![1660552641798](README.assets/1660552641798.png)
+>
+> nacos-config-client-dev
+
+
+
+Nacos界面配置对应
+
+>
+>
+>![1660552782291](README.assets/1660552782291.png)
+>
+>设置DataId
+>
+>![1660552827666](README.assets/1660552827666.png)
+>
+>小总结说明
+>
+>![1660552863702](README.assets/1660552863702.png)
+
+
+
+历史配置
+
+> Nacos会记录配置文件的历史版本默认保留30天，此外还有一键回滚功能，回滚操作将会触发配置更新
+>
+> 回滚
+>
+> ![1660552946889](README.assets/1660552946889.png)
+
+
+
+###### vi.测试
+
+![1660553141045](README.assets/1660553141045.png)
+
+
+
+![1660553480236](README.assets/1660553480236.png)
+
+###### vii.自带动态刷新
+
+> 修改下Nacos中的yaml配置文件，再次调用查看配置的接口，就会发现配置已经刷新
+
+![1660553868846](README.assets/1660553868846.png)
+
+
+
+
+
+##### (2)Nacos作为配置中心-分类配置
+
+![1660553837509](README.assets/1660553837509.png)
+
+###### i.问题
+
+> 多环境多项目管理
+>
+> <mark>问题1：</mark>
+> 实际开发中，通常一个系统会准备
+> dev开发环境
+> test测试环境
+> prod生产环境。
+> 如何保证指定环境启动时服务能正确读取到Nacos上相应环境的配置文件呢？
+>
+> <mark>问题2：</mark>
+> 一个大型分布式微服务系统会有很多微服务子项目，
+> 每个微服务项目又都会有相应的开发环境、测试环境、预发环境、正式环境......
+> 那怎么对这些微服务配置进行管理呢？
+
+###### ii.Nacos的图形化管理界面
+
+配置管理
+
+> ![1660554158012](README.assets/1660554158012.png)
+
+命名空间
+
+> ![1660554182621](README.assets/1660554182621.png)
+
+
+
+
+
+###### iii.Namespace+Group+Data ID三者关系?为什么这么设计?
+
+> <mark>1 是什么</mark>
+>    类似Java里面的package名和类名
+>    最外层的namespace是可以用于区分部署环境的，Group和DataID逻辑上区分两个目标对象。
+> <mark>2 三者情况</mark>
+>     ![1660554241849](README.assets/1660554241849.png)
+> <mark>默认情况：
+> Namespace=public，Group=DEFAULT_GROUP, 默认Cluster是DEFAULT</mark>
+>
+> Nacos默认的命名空间是public，Namespace主要用来实现隔离。
+> 比方说我们现在有三个环境：开发、测试、生产环境，我们就可以创建三个Namespace，不同的Namespace之间是隔离的。
+>
+> Group默认是DEFAULT_GROUP，Group可以把不同的微服务划分到同一个分组里面去
+>
+> Service就是微服务；一个Service可以包含多个Cluster（集群），Nacos默认Cluster是DEFAULT，Cluster是对指定微服务的一个虚拟划分。
+> 比方说为了容灾，将Service微服务分别部署在了杭州机房和广州机房，
+> 这时就可以给杭州机房的Service微服务起一个集群名称（HZ），
+> 给广州机房的Service微服务起一个集群名称（GZ），还可以尽量让同一个机房的微服务互相调用，以提升性能。
+>
+> 最后是Instance，就是微服务的实例。
+>
+
+###### iv.Case
+
+![1660554453668](README.assets/1660554453668.png)
+
+(1)DataID方案
+
+新建dev配置DataID
+
+> ![1660554596103](README.assets/1660554596103.png)
+
+
+
+新建test配置DataID
+
+> ![1660554627565](README.assets/1660554627565.png)
+
+
+
+通过spring.profile.active属性就能进行多环境下配置文件的读取
+
+![1660554673978](README.assets/1660554673978.png)
+
+
+
+(2)Group方案
+
+通过Group实现环境区分，新建Group
+
+> 
+>
+> ![1660554761287](README.assets/1660554761287.png)
+
+在nacos图形界面控制台上面新建配置文件DataID
+
+> ![1660554806636](README.assets/1660554806636.png)
+
+bootstrap+application
+
+> <mark>在config下增加一条group的配置即可。
+> 可配置为DEV_GROUP或TEST_GROUP</mark>
+
+![1660554849791](README.assets/1660554849791.png)
+
+
+
+
+
+
+
+(3)Namespace方案
+
+![1660555320547](README.assets/1660555320547.png)
+
+新建dev/test的Namespace
+
+>    注意下面的命名空间ID：
+>
+> ![1660555352778](README.assets/1660555352778.png)
+
+回到服务管理-服务列表查看
+
+> ![1660555383406](README.assets/1660555383406.png)
+
+
+
+按照域名配置填写
+
+> ![1660555406998](README.assets/1660555406998.png)
+
+YML
+
+![1660555430052](README.assets/1660555430052.png)
+
+bootstrap.yml
+
+```yaml
+ 
+# nacos注册中心
+server:
+  port: 3377
+
+spring:
+  application:
+    name: nacos-order
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848 #Nacos服务注册中心地址
+      config:
+        server-addr: localhost:8848 #Nacos作为配置中心地址
+        file-extension: yaml #这里我们获取的yaml格式的配置
+        namespace: 5da1dccc-ee26-49e0-b8e5-7d9559b95ab0
+        #group: DEV_GROUP
+        group: TEST_GROUP
+
+```
+
+application.yml
+
+```yaml
+# Nacos注册配置，application.yml
+spring:
+  profiles:
+    #active: test
+    active: dev
+    #active: info
+```
+
+
+
+#### 5、Nacos集群和持久化配置（重要）
+
+![1660555830303](README.assets/1660555830303.png)
+
+##### (1)官网说明
+
+![1660555811038](README.assets/1660555811038.png)
+
+> https://nacos.io/zh-cn/docs/cluster-mode-quick-start.html
+>
+> 官网架构图(写的o(╥﹏╥)o)
+>
+> ![1660556046518](README.assets/1660556046518.png)
+>
+> 上图官网翻译，真实情况
+>
+> ![1660556090084](README.assets/1660556090084.png)
+>
+> 
+>
+> 说明
+>
+> 默认Nacos使用嵌入式数据库实现数据的存储。所以，如果启动多个默认配置下的Nacos节点，数据存储是存在一致性问题的。
+> 为了解决这个问题，Nacos采用了集中式存储的方式来支持集群化部署，目前只支持MySQL的存储。
+>
+> ![1660556165670](README.assets/1660556165670.png)
+>
+> ![1660556217322](README.assets/1660556217322.png)
+>
+> 按照上述，我们需要mysql数据库
+>
+> 官网说明
+>
+> https://nacos.io/zh-cn/docs/deployment.html
+>
+> 重点说明
+>
+> ![1660556165670](README.assets/1660556165670.png)
+>
+> ![1660556217322](README.assets/1660556217322.png)
+
+##### (2)Nacos持久化配置解释
+
+![1660556342314](README.assets/1660556342314.png)
+
+###### i.Nacos默认自带的是嵌入式数据库derby
+
+> https://github.com/alibaba/nacos/blob/develop/config/pom.xml
+
+###### ii.derby到mysql切换配置步骤
+
+> nacos-server-1.1.4\nacos\conf目录下找到sql脚本
+>
+> nacos-mysql.sql
+>
+> 执行脚本
+>
+> ```sql
+>  
+> CREATE DATABASE nacos_config;
+> USE nacos_config;
+>  
+> /******************************************/
+> /*   数据库全名 = nacos_config   */
+> /*   表名称 = config_info   */
+> /******************************************/
+> CREATE TABLE `config_info` (
+>   `id` BIGINT(20) NOT NULL AUTO_INCREMENT COMMENT 'id',
+>   `data_id` VARCHAR(255) NOT NULL COMMENT 'data_id',
+>   `group_id` VARCHAR(255) DEFAULT NULL,
+>   `content` LONGTEXT NOT NULL COMMENT 'content',
+>   `md5` VARCHAR(32) DEFAULT NULL COMMENT 'md5',
+>   `gmt_create` DATETIME NOT NULL DEFAULT '2010-05-05 00:00:00' COMMENT '创建时间',
+>   `gmt_modified` DATETIME NOT NULL DEFAULT '2010-05-05 00:00:00' COMMENT '修改时间',
+>   `src_user` TEXT COMMENT 'source user',
+>   `src_ip` VARCHAR(20) DEFAULT NULL COMMENT 'source ip',
+>   `app_name` VARCHAR(128) DEFAULT NULL,
+>   `tenant_id` VARCHAR(128) DEFAULT '' COMMENT '租户字段',
+>   `c_desc` VARCHAR(256) DEFAULT NULL,
+>   `c_use` VARCHAR(64) DEFAULT NULL,
+>   `effect` VARCHAR(64) DEFAULT NULL,
+>   `type` VARCHAR(64) DEFAULT NULL,
+>   `c_schema` TEXT,
+>   PRIMARY KEY (`id`),
+>   UNIQUE KEY `uk_configinfo_datagrouptenant` (`data_id`,`group_id`,`tenant_id`)
+> ) ENGINE=INNODB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='config_info';
+>  
+> /******************************************/
+> /*   数据库全名 = nacos_config   */
+> /*   表名称 = config_info_aggr   */
+> /******************************************/
+> CREATE TABLE `config_info_aggr` (
+>   `id` BIGINT(20) NOT NULL AUTO_INCREMENT COMMENT 'id',
+>   `data_id` VARCHAR(255) NOT NULL COMMENT 'data_id',
+>   `group_id` VARCHAR(255) NOT NULL COMMENT 'group_id',
+>   `datum_id` VARCHAR(255) NOT NULL COMMENT 'datum_id',
+>   `content` LONGTEXT NOT NULL COMMENT '内容',
+>   `gmt_modified` DATETIME NOT NULL COMMENT '修改时间',
+>   `app_name` VARCHAR(128) DEFAULT NULL,
+>   `tenant_id` VARCHAR(128) DEFAULT '' COMMENT '租户字段',
+>   PRIMARY KEY (`id`),
+>   UNIQUE KEY `uk_configinfoaggr_datagrouptenantdatum` (`data_id`,`group_id`,`tenant_id`,`datum_id`)
+> ) ENGINE=INNODB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='增加租户字段';
+>  
+>  
+> /******************************************/
+> /*   数据库全名 = nacos_config   */
+> /*   表名称 = config_info_beta   */
+> /******************************************/
+> CREATE TABLE `config_info_beta` (
+>   `id` BIGINT(20) NOT NULL AUTO_INCREMENT COMMENT 'id',
+>   `data_id` VARCHAR(255) NOT NULL COMMENT 'data_id',
+>   `group_id` VARCHAR(128) NOT NULL COMMENT 'group_id',
+>   `app_name` VARCHAR(128) DEFAULT NULL COMMENT 'app_name',
+>   `content` LONGTEXT NOT NULL COMMENT 'content',
+>   `beta_ips` VARCHAR(1024) DEFAULT NULL COMMENT 'betaIps',
+>   `md5` VARCHAR(32) DEFAULT NULL COMMENT 'md5',
+>   `gmt_create` DATETIME NOT NULL DEFAULT '2010-05-05 00:00:00' COMMENT '创建时间',
+>   `gmt_modified` DATETIME NOT NULL DEFAULT '2010-05-05 00:00:00' COMMENT '修改时间',
+>   `src_user` TEXT COMMENT 'source user',
+>   `src_ip` VARCHAR(20) DEFAULT NULL COMMENT 'source ip',
+>   `tenant_id` VARCHAR(128) DEFAULT '' COMMENT '租户字段',
+>   PRIMARY KEY (`id`),
+>   UNIQUE KEY `uk_configinfobeta_datagrouptenant` (`data_id`,`group_id`,`tenant_id`)
+> ) ENGINE=INNODB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='config_info_beta';
+>  
+> /******************************************/
+> /*   数据库全名 = nacos_config   */
+> /*   表名称 = config_info_tag   */
+> /******************************************/
+> CREATE TABLE `config_info_tag` (
+>   `id` BIGINT(20) NOT NULL AUTO_INCREMENT COMMENT 'id',
+>   `data_id` VARCHAR(255) NOT NULL COMMENT 'data_id',
+>   `group_id` VARCHAR(128) NOT NULL COMMENT 'group_id',
+>   `tenant_id` VARCHAR(128) DEFAULT '' COMMENT 'tenant_id',
+>   `tag_id` VARCHAR(128) NOT NULL COMMENT 'tag_id',
+>   `app_name` VARCHAR(128) DEFAULT NULL COMMENT 'app_name',
+>   `content` LONGTEXT NOT NULL COMMENT 'content',
+>   `md5` VARCHAR(32) DEFAULT NULL COMMENT 'md5',
+>   `gmt_create` DATETIME NOT NULL DEFAULT '2010-05-05 00:00:00' COMMENT '创建时间',
+>   `gmt_modified` DATETIME NOT NULL DEFAULT '2010-05-05 00:00:00' COMMENT '修改时间',
+>   `src_user` TEXT COMMENT 'source user',
+>   `src_ip` VARCHAR(20) DEFAULT NULL COMMENT 'source ip',
+>   PRIMARY KEY (`id`),
+>   UNIQUE KEY `uk_configinfotag_datagrouptenanttag` (`data_id`,`group_id`,`tenant_id`,`tag_id`)
+> ) ENGINE=INNODB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='config_info_tag';
+>  
+> /******************************************/
+> /*   数据库全名 = nacos_config   */
+> /*   表名称 = config_tags_relation   */
+> /******************************************/
+> CREATE TABLE `config_tags_relation` (
+>   `id` BIGINT(20) NOT NULL COMMENT 'id',
+>   `tag_name` VARCHAR(128) NOT NULL COMMENT 'tag_name',
+>   `tag_type` VARCHAR(64) DEFAULT NULL COMMENT 'tag_type',
+>   `data_id` VARCHAR(255) NOT NULL COMMENT 'data_id',
+>   `group_id` VARCHAR(128) NOT NULL COMMENT 'group_id',
+>   `tenant_id` VARCHAR(128) DEFAULT '' COMMENT 'tenant_id',
+>   `nid` BIGINT(20) NOT NULL AUTO_INCREMENT,
+>   PRIMARY KEY (`nid`),
+>   UNIQUE KEY `uk_configtagrelation_configidtag` (`id`,`tag_name`,`tag_type`),
+>   KEY `idx_tenant_id` (`tenant_id`)
+> ) ENGINE=INNODB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='config_tag_relation';
+>  
+> /******************************************/
+> /*   数据库全名 = nacos_config   */
+> /*   表名称 = group_capacity   */
+> /******************************************/
+> CREATE TABLE `group_capacity` (
+>   `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+>   `group_id` VARCHAR(128) NOT NULL DEFAULT '' COMMENT 'Group ID，空字符表示整个集群',
+>   `quota` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '配额，0表示使用默认值',
+>   `usage` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '使用量',
+>   `max_size` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '单个配置大小上限，单位为字节，0表示使用默认值',
+>   `max_aggr_count` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '聚合子配置最大个数，，0表示使用默认值',
+>   `max_aggr_size` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '单个聚合数据的子配置大小上限，单位为字节，0表示使用默认值',
+>   `max_history_count` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '最大变更历史数量',
+>   `gmt_create` DATETIME NOT NULL DEFAULT '2010-05-05 00:00:00' COMMENT '创建时间',
+>   `gmt_modified` DATETIME NOT NULL DEFAULT '2010-05-05 00:00:00' COMMENT '修改时间',
+>   PRIMARY KEY (`id`),
+>   UNIQUE KEY `uk_group_id` (`group_id`)
+> ) ENGINE=INNODB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='集群、各Group容量信息表';
+>  
+> /******************************************/
+> /*   数据库全名 = nacos_config   */
+> /*   表名称 = his_config_info   */
+> /******************************************/
+> CREATE TABLE `his_config_info` (
+>   `id` BIGINT(64) UNSIGNED NOT NULL,
+>   `nid` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+>   `data_id` VARCHAR(255) NOT NULL,
+>   `group_id` VARCHAR(128) NOT NULL,
+>   `app_name` VARCHAR(128) DEFAULT NULL COMMENT 'app_name',
+>   `content` LONGTEXT NOT NULL,
+>   `md5` VARCHAR(32) DEFAULT NULL,
+>   `gmt_create` DATETIME NOT NULL DEFAULT '2010-05-05 00:00:00',
+>   `gmt_modified` DATETIME NOT NULL DEFAULT '2010-05-05 00:00:00',
+>   `src_user` TEXT,
+>   `src_ip` VARCHAR(20) DEFAULT NULL,
+>   `op_type` CHAR(10) DEFAULT NULL,
+>   `tenant_id` VARCHAR(128) DEFAULT '' COMMENT '租户字段',
+>   PRIMARY KEY (`nid`),
+>   KEY `idx_gmt_create` (`gmt_create`),
+>   KEY `idx_gmt_modified` (`gmt_modified`),
+>   KEY `idx_did` (`data_id`)
+> ) ENGINE=INNODB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='多租户改造';
+>  
+>  
+> /******************************************/
+> /*   数据库全名 = nacos_config   */
+> /*   表名称 = tenant_capacity   */
+> /******************************************/
+> CREATE TABLE `tenant_capacity` (
+>   `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+>   `tenant_id` VARCHAR(128) NOT NULL DEFAULT '' COMMENT 'Tenant ID',
+>   `quota` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '配额，0表示使用默认值',
+>   `usage` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '使用量',
+>   `max_size` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '单个配置大小上限，单位为字节，0表示使用默认值',
+>   `max_aggr_count` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '聚合子配置最大个数',
+>   `max_aggr_size` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '单个聚合数据的子配置大小上限，单位为字节，0表示使用默认值',
+>   `max_history_count` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '最大变更历史数量',
+>   `gmt_create` DATETIME NOT NULL DEFAULT '2010-05-05 00:00:00' COMMENT '创建时间',
+>   `gmt_modified` DATETIME NOT NULL DEFAULT '2010-05-05 00:00:00' COMMENT '修改时间',
+>   PRIMARY KEY (`id`),
+>   UNIQUE KEY `uk_tenant_id` (`tenant_id`)
+> ) ENGINE=INNODB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='租户容量信息表';
+>  
+>  
+> CREATE TABLE `tenant_info` (
+>   `id` BIGINT(20) NOT NULL AUTO_INCREMENT COMMENT 'id',
+>   `kp` VARCHAR(128) NOT NULL COMMENT 'kp',
+>   `tenant_id` VARCHAR(128) DEFAULT '' COMMENT 'tenant_id',
+>   `tenant_name` VARCHAR(128) DEFAULT '' COMMENT 'tenant_name',
+>   `tenant_desc` VARCHAR(256) DEFAULT NULL COMMENT 'tenant_desc',
+>   `create_source` VARCHAR(32) DEFAULT NULL COMMENT 'create_source',
+>   `gmt_create` BIGINT(20) NOT NULL COMMENT '创建时间',
+>   `gmt_modified` BIGINT(20) NOT NULL COMMENT '修改时间',
+>   PRIMARY KEY (`id`),
+>   UNIQUE KEY `uk_tenant_info_kptenantid` (`kp`,`tenant_id`),
+>   KEY `idx_tenant_id` (`tenant_id`)
+> ) ENGINE=INNODB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='tenant_info';
+>  
+> CREATE TABLE users (
+>     username VARCHAR(50) NOT NULL PRIMARY KEY,
+>     PASSWORD VARCHAR(500) NOT NULL,
+>     enabled BOOLEAN NOT NULL
+> );
+>  
+> CREATE TABLE roles (
+>     username VARCHAR(50) NOT NULL,
+>     role VARCHAR(50) NOT NULL
+> );
+>  
+> INSERT INTO users (username, PASSWORD, enabled) VALUES ('nacos', '$2a$10$EuWPZHzz32dJN7jexM34MOeYirDdFAZm2kuWj7VEOJhhZkDrxfvUu', TRUE);
+>  
+> INSERT INTO roles (username, role) VALUES ('nacos', 'ROLE_ADMIN');
+> ```
+>
+> nacos-server-1.1.4\nacos\conf目录下找到application.properties
+>
+> ```properties
+> spring.datasource.platform=mysql
+>  
+> db.num=1
+> db.url.0=jdbc:mysql://127.0.0.1:3306/nacos_config?characterEncoding=utf8&connectTimeout=1000&socketTimeout=3000&autoReconnect=true
+> db.user=root
+> db.password=123456
+> 
+> ```
+>
+> 
+
+###### iii.启动Nacos，可以看到是个全新的空记录界面，以前是记录进derby
+
+
+
+##### (3)Linux版Nacos+MySQL生产环境配置
+
+![1660556623035](README.assets/1660556623035.png)
+
+###### i.预计需要，1个Nginx+3个nacos注册中心+1个mysql
+
+
+
+###### ii.Nacos下载Linux版
+
+> https://github.com/alibaba/nacos/releases/tag/1.1.4
+>
+> nacos-server-1.1.4.tar.gz
+>
+> 解压后安装
+>
+> ![1660556984202](README.assets/1660556984202.png)
+
+###### iii.集群配置步骤(重点)
+
+![1660557043304](README.assets/1660557043304.png)
+
+1.  Linux服务器上mysql数据库配置
+
+   SQL脚本在哪里
+
+   ![1660557296030](README.assets/1660557296030.png)
+
+   自己Linux机器上的Mysql数据库粘贴，执行后结果
+
+   ![1660557347550](README.assets/1660557347550.png)
+
+2. application.properties 配置
+
+   位置
+
+   ![1660558536959](README.assets/1660558536959.png)
+
+   内容
+
+   > application.properties 文件打开后的最后面，配置如下内容：
+   >
+   > ```yaml
+   > spring.datasource.platform=mysql
+   >  
+   > db.num=1
+   > db.url.0=jdbc:mysql://127.0.0.1:3306/nacos_config?characterEncoding=utf8&connectTimeout=1000&socketTimeout=3000&autoReconnect=true
+   > db.user=root
+   > db.password=123456
+   > ```
+   >
+   > ![1660558586268](README.assets/1660558586268.png)
+
+3. Linux服务器上nacos的集群配置cluster.conf
+
+   > 梳理出3台nacos集器的不同服务端口号
+   >
+   > 复制出cluster.conf
+   >
+   > ![1660558631770](README.assets/1660558631770.png)
+   >
+   > ![1660558649514](README.assets/1660558649514.png)
+   >
+   > ![1660558657022](README.assets/1660558657022.png)
+   >
+   > 内容
+   >
+   > ![1660558700016](README.assets/1660558700016.png)
+   >
+   > 这个IP不能写127.0.0.1，必须是
+   > Linux命令hostname -i能够识别的IP
+   >
+   > ![1660558738789](README.assets/1660558738789.png)
+
+4. 编辑Nacos的启动脚本startup.sh，使它能够接受不同的启动端口
+
+   > /mynacos/nacos/bin 目录下有startup.sh
+   >
+   > 在什么地方，修改什么，怎么修改
+   >
+   > 思考
+   >
+   > /mynacos/nacos/bin 目录下有startup.sh
+   >
+   > 平时单机版的启动，都是./startup.sh即可。
+   >
+   > 但是
+   >
+   > 集群启动，我们希望可以类似其它软件的shell命令，传递不同的端口号启动不同的nacos实例。
+   > 命令：./startup.sh -p 3333 表示启动端口号为3333的nacos服务器实例，和上一步的cluster.conf配置的一致。
+
+   修改内容
+
+   ![1660558872370](README.assets/1660558872370.png)
+
+   | 修改前                                            | 修改后                                            |
+   | ------------------------------------------------- | ------------------------------------------------- |
+   | ![1660558913635](README.assets/1660558913635.png) | ![1660558944664](README.assets/1660558944664.png) |
+   |                                                   |                                                   |
+   | ![1660558979650](README.assets/1660558979650.png) | ![1660558988255](README.assets/1660558988255.png) |
+
+   执行方式
+
+   ![1660559050864](README.assets/1660559050864.png)
+
+5. Nginx的配置，由它作为负载均衡器
+
+   （1）修改nginx的配置文件
+
+   ![1660559089076](README.assets/1660559089076.png)
+
+   （2）nginx.conf
+
+   |                                                              |                                                              |
+   | ------------------------------------------------------------ | ------------------------------------------------------------ |
+   | upstream cluster{
+        server 127.0.0.1:3333;
+
+        server 127.0.0.1:4444;
+
+        server 127.0.0.1:5555;
+
+    } | server {
+        listen       1111;
+
+        server_name  localhost;
+
+        #charset koi8-r;
+
+        #access_log  logs/host.access.log  main;
+
+        location / {
+
+            #root   html;
+
+            #index  index.html index.htm;
+
+            proxy_pass http://cluster;
+
+        }
+
+.......省略 |
+   |                                                              |                                                              |
+   |                                                              |                                                              |
+
+   ![1660559175438](README.assets/1660559175438.png)
+
+   按照指定启动
+
+   ![1660559283351](README.assets/1660559283351.png)
+
+6. 截止到此处，1个Nginx+3个nacos注册中心+1个mysql
+
+   测试通过nginx访问nacos
+
+   > http://192.168.111.144:1111/nacos/#/login
+
+   新建一个配置测试
+
+   ![1660559323409](README.assets/1660559323409.png)
+
+   linux服务器的mysql插入一条记录
+
+   ![1660559340572](README.assets/1660559340572.png)
+
+###### iv.测试
+
+![1660559365749](README.assets/1660559365749.png)
+
+yml
+
+```yaml
+server:
+  port: 9002
+
+spring:
+  application:
+    name: nacos-payment-provider
+  cloud:
+    nacos:
+      discovery:
+        #配置Nacos地址
+        #server-addr: localhost:8848
+        # 换成nginx的1111端口，做集群
+        server-addr: 192.168.111.144:1111
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+```
+
+结果
+
+![1660559418983](README.assets/1660559418983.png)
+
+###### v.高可用小总结
+
+![1660559435456](README.assets/1660559435456.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
