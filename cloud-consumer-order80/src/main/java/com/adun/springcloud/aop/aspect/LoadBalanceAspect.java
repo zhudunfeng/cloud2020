@@ -3,7 +3,6 @@ package com.adun.springcloud.aop.aspect;
 import com.adun.springcloud.aop.annotation.LoadBalanced;
 import com.adun.springcloud.lb.LoadBalancer;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
@@ -12,11 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
 
 import java.lang.reflect.Method;
 import java.net.URI;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -25,7 +22,7 @@ import java.util.List;
  */
 @Aspect
 @Component
-public class LoadBalanceHandler {
+public class LoadBalanceAspect {
 
 
     @Autowired
@@ -34,8 +31,10 @@ public class LoadBalanceHandler {
     @Autowired
     private LoadBalancer loadBalancer;
 
-    @Autowired
-    private RestTemplate restTemplate;
+
+    //定义传出公共空间
+    public static final ThreadLocal<String> THREAD_LOCAL=new ThreadLocal<>();
+
 
     /**
      *     切入点表达式
@@ -60,14 +59,22 @@ public class LoadBalanceHandler {
             }
             ServiceInstance serviceInstance = loadBalancer.instances(instances);
             URI uri = serviceInstance.getUri();
-            if(!path.startsWith("/")){
+            if(!path.trim().startsWith("/")){
                 path="/"+path;
             }
-            joinPoint.proceed();
-            return restTemplate.getForObject(uri+path,String.class);
+            THREAD_LOCAL.set(uri+path);
+            Object result = joinPoint.proceed();
+            //防止内存泄露，必须删除，不然会造成线程不安全，因为在这里我们使用的是tomcat线程池
+            //请求结束不代表线程结束
+            THREAD_LOCAL.remove();
+            return result;
         }
 
         return null;
+    }
+
+    public static String getUrl(){
+        return THREAD_LOCAL.get();
     }
 
 }

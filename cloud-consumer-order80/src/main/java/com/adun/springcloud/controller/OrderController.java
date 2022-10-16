@@ -1,6 +1,7 @@
 package com.adun.springcloud.controller;
 
 import com.adun.springcloud.aop.annotation.LoadBalanced;
+import com.adun.springcloud.aop.aspect.LoadBalanceAspect;
 import com.adun.springcloud.entities.CommonResult;
 import com.adun.springcloud.entities.Payment;
 import com.adun.springcloud.lb.LoadBalancer;
@@ -66,8 +67,10 @@ public class OrderController {
     @GetMapping(value = "/consumer/payment/lb")
     @LoadBalanced(path = "/payment/lb",instance = "CLOUD-PAYMENT-SERVICE")
     public String getPaymentLB(){
-        System.out.println("调用成功");
-        return "";
+        String result = restTemplate.getForObject(LoadBalanceAspect.getUrl(), String.class);
+        //String底层使用StringBuilder进行拼接
+        System.out.println("调用成功"+result);
+        return result;
     }
 
 
